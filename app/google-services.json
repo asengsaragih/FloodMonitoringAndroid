@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "361544530399",
+    "firebase_url": "https://flood-monitoring-cba07.firebaseio.com",
+    "project_id": "flood-monitoring-cba07",
+    "storage_bucket": "flood-monitoring-cba07.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:361544530399:android:a8be6bbe4c4f7447546c6a",
+        "android_client_info": {
+          "package_name": "com.kopisenja.floodmonitoring"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "361544530399-m3r5hktet1sp3csdke5ui40i1d9oa0ca.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kopisenja.floodmonitoring",
+            "certificate_hash": "681d5df040819310bda9d24c6581904a83a41a71"
+          }
+        },
+        {
+          "client_id": "361544530399-apapudqpcda6uns2usq0omnkmfgdamns.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlyt-fQvoGXzw54cQ7LDP8hEPz0HDWVoU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "361544530399-apapudqpcda6uns2usq0omnkmfgdamns.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
