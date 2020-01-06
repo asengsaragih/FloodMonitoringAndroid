@@ -2,6 +2,8 @@ package com.kopisenja.floodmonitoring.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -29,7 +31,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         TextView textView = findViewById(R.id.textviewTengah);
-        importJsonFirebase(textView);
+
+        Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
+        startActivity(intent);
     }
 
     private void importJsonFirebase(TextView clickableTextview) {
