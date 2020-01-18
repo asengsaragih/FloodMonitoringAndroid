@@ -88,7 +88,13 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         for (int i = 0; i < mLocation.size() ; i++) {
             mMap.addMarker(new MarkerOptions().position(mLocation.get(i)).title("Location"));
 //            mMap.animateCamera(CameraUpdateFactory.zoomTo(new LatLng(location1, 15f)));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location1, 15f));
+            int calcutateDistance =  calculateDistance();
+
+            if (calcutateDistance == 1) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location1, 15f));
+            } else {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location2, 15f));
+            }
         }
     }
 
@@ -149,6 +155,7 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
             mLongitude = String.valueOf(longi);
 
             Log.d("CURRENT_LOCATION", mLatitude + " " + mLongitude);
+            Log.d("CURRENT_LOCATION", "Jarak Terdekat di Lokasi : " + calculateDistance());
 
         } else if (locationNetwork != null) {
             double lat = locationNetwork.getLatitude();
@@ -158,6 +165,7 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
             mLongitude = String.valueOf(longi);
 
             Log.d("CURRENT_LOCATION", mLatitude + " " + mLongitude);
+            Log.d("CURRENT_LOCATION", "Jarak Terdekat di Lokasi : " + calculateDistance());
 
         } else if (locationPassive != null) {
             double lat = locationPassive.getLatitude();
@@ -167,9 +175,34 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
             mLongitude = String.valueOf(longi);
 
             Log.d("CURRENT_LOCATION", mLatitude + " " + mLongitude);
+            Log.d("CURRENT_LOCATION", "Jarak Terdekat di Lokasi : " + calculateDistance());
 
         } else {
             Log.e("CURRENT_LOCATION", "cant get current location");
+        }
+    }
+
+    private int calculateDistance() {
+        Location currentLocation = new Location("");
+        Location loc1 = new Location("");
+        Location loc2 = new Location("");
+
+        currentLocation.setLatitude(Double.parseDouble(mLatitude));
+        currentLocation.setLongitude(Double.parseDouble(mLongitude));
+
+        loc1.setLatitude(-6.975464);
+        loc1.setLongitude(107.633257);
+
+        loc2.setLatitude(-6.993728);
+        loc2.setLongitude(107.631702);
+
+        float distance1 = currentLocation.distanceTo(loc1);
+        float distance2 = currentLocation.distanceTo(loc2);
+
+        if (distance1 <= distance2) {
+            return 1;
+        } else {
+            return 2;
         }
     }
 }
