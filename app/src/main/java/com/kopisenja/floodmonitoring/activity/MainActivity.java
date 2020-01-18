@@ -3,7 +3,10 @@ package com.kopisenja.floodmonitoring.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -32,6 +35,21 @@ public class MainActivity extends AppCompatActivity {
 
         TextView textView = findViewById(R.id.textviewTengah);
 
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                intentIndex();
+            }
+        });
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getLocation() {
+        LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
+         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    }
+
+    private void intentIndex() {
         Intent intent = new Intent(getApplicationContext(), IndexActivity.class);
         startActivity(intent);
     }
