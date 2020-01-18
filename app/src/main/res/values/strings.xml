@@ -3,4 +3,5 @@
     <string name="title_activity_index">Map</string>
     <string name="no_location_access">Access Location Denied</string>
     <string name="turn_location_on">Turn On Location</string>
+    <string name="no_location_found">Can\'t Get Current Location</string>
 </resources>

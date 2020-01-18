@@ -7,10 +7,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.Manifest;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -27,19 +31,22 @@ import com.kopisenja.floodmonitoring.R;
 
 import java.util.ArrayList;
 
+import static com.kopisenja.floodmonitoring.base.FunctionClass.ToastMessage;
+
 public class IndexActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private ArrayList<LatLng> mLocation = new ArrayList<LatLng>();
+
     public static final int REQUEST_ACCESS_LOCATION = 10;
+    private String mLatitude;
+    private String mLongitude;
 
     private ConstraintLayout mTrueConstraintLayout, mLocationDeniedConstraintLayout, mInternetDeniedConstraintLayout;
     private Button mRetryLocationButton;
 
     LatLng location1 = new LatLng(-6.975464, 107.633257);
     LatLng location2 = new LatLng(-6.993728, 107.631702);
-
-    private LocationManager mLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,18 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
 
         checkLocationPermission();
     }
+
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        checkLocationPermission();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        checkLocationPermission();
+//    }
 
     private void setLocation() {
         mLocation.add(location1);
@@ -107,9 +126,50 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         if (isTrue == true) {
             mTrueConstraintLayout.setVisibility(View.VISIBLE);
             mLocationDeniedConstraintLayout.setVisibility(View.GONE);
+            getCurrentLocation();
         } else {
             mTrueConstraintLayout.setVisibility(View.GONE);
             mLocationDeniedConstraintLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getCurrentLocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        Location locationGps = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location locationNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Location locationPassive = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+
+        if (locationGps != null) {
+            double lat = locationGps.getLatitude();
+            double longi = locationGps.getLongitude();
+
+            mLatitude = String.valueOf(lat);
+            mLongitude = String.valueOf(longi);
+
+            Log.d("CURRENT_LOCATION", mLatitude + " " + mLongitude);
+
+        } else if (locationNetwork != null) {
+            double lat = locationNetwork.getLatitude();
+            double longi = locationNetwork.getLongitude();
+
+            mLatitude = String.valueOf(lat);
+            mLongitude = String.valueOf(longi);
+
+            Log.d("CURRENT_LOCATION", mLatitude + " " + mLongitude);
+
+        } else if (locationPassive != null) {
+            double lat = locationPassive.getLatitude();
+            double longi = locationPassive.getLongitude();
+
+            mLatitude = String.valueOf(lat);
+            mLongitude = String.valueOf(longi);
+
+            Log.d("CURRENT_LOCATION", mLatitude + " " + mLongitude);
+
+        } else {
+            Log.e("CURRENT_LOCATION", "cant get current location");
         }
     }
 }
