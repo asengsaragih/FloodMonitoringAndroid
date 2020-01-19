@@ -29,6 +29,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.kopisenja.floodmonitoring.R;
 
 import java.util.ArrayList;
@@ -94,6 +100,8 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         mTimeTextview = mBottomSheetDialog.findViewById(R.id.textView_index_time);
         mDebitTextview = mBottomSheetDialog.findViewById(R.id.textView_index_debit);
         mLevelTextview = mBottomSheetDialog.findViewById(R.id.textView_index_level);
+
+        getCurrentData();
     }
 
     private void setLocation() {
@@ -103,6 +111,68 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
+
+    private void getCurrentData() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Recent");
+        Query lastQuery = reference.orderByKey().limitToLast(1);
+        lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String date = dataSnapshot.child("date").getValue(String.class);
+                String time = dataSnapshot.child("time").getValue(String.class);
+                String location = dataSnapshot.child("location").getValue(String.class);
+                String debit = dataSnapshot.child("debit").getValue(String.class);
+                String level = dataSnapshot.child("level").getValue(String.class);
+                String category = dataSnapshot.child("category").getValue(String.class);
+
+//                mCategoryTextview.setText(category);
+//                mLocationTextview.setText(location);
+//                mDateTextview.setText(date);
+//                mTimeTextview.setText(time);
+//                mDebitTextview.setText(debit);
+//                mLevelTextview.setText(level);
+
+                Log.d("TES_FIREBASE", category + " " + location);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+//        lastQuery.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                String date = dataSnapshot.child("date").getValue(String.class);
+//                String time = dataSnapshot.child("time").getValue(String.class);
+//                String location = dataSnapshot.child("location").getValue(String.class);
+//                String debit = dataSnapshot.child("debit").getValue(String.class);
+//                String level = dataSnapshot.child("level").getValue(String.class);
+//                String category = dataSnapshot.child("category").getValue(String.class);
+//
+////                mCategoryTextview.setText(category);
+////                mLocationTextview.setText(location);
+////                mDateTextview.setText(date);
+////                mTimeTextview.setText(time);
+////                mDebitTextview.setText(debit);
+////                mLevelTextview.setText(level);
+//
+//                Log.d("TES_FIREBASE", category + " " + location);
+//
+//                mCategoryTextview.setText("category");
+//                mLocationTextview.setText("location");
+//                mDateTextview.setText("date");
+//                mTimeTextview.setText("time");
+//                mDebitTextview.setText("debit");
+//                mLevelTextview.setText("Level");
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     @Override

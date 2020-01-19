@@ -23,6 +23,8 @@ import com.kopisenja.floodmonitoring.base.Flood;
 import java.util.Calendar;
 
 import static com.kopisenja.floodmonitoring.base.FunctionClass.ToastMessage;
+import static com.kopisenja.floodmonitoring.base.FunctionClass.getCurrentDate;
+import static com.kopisenja.floodmonitoring.base.FunctionClass.getCurrentTime;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,12 +35,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView textView = findViewById(R.id.textviewTengah);
+        final TextView textView = findViewById(R.id.textviewTengah);
 
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                intentIndex();
+                importJsonFirebase(textView);
             }
         });
     }
@@ -61,10 +63,12 @@ public class MainActivity extends AppCompatActivity {
                 mDatabaseReferences = FirebaseDatabase.getInstance().getReference("Recent");
                 String keyID = mDatabaseReferences.push().getKey();
                 mDatabaseReferences.child(keyID).setValue(new Flood(
-                        Long.toString(System.currentTimeMillis()),
-                        "-6.975464, 107.633257",
-                        "20.12",
-                        "300",
+                        getCurrentDate(),
+                        getCurrentTime(),
+                        "Bojongsoang",
+                        "300 L/D",
+                        "30 M",
+                        1,
                         1
                 )).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -77,6 +81,34 @@ public class MainActivity extends AppCompatActivity {
                         ToastMessage(MainActivity.this, "Gagal", 1);
                     }
                 });
+            }
+        });
+
+        clickableTextview.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                mDatabaseReferences = FirebaseDatabase.getInstance().getReference("Recent");
+                String keyID = mDatabaseReferences.push().getKey();
+                mDatabaseReferences.child(keyID).setValue(new Flood(
+                        getCurrentDate(),
+                        getCurrentTime(),
+                        "Radio",
+                        "350 L/D",
+                        "25 M",
+                        1,
+                        1
+                )).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        ToastMessage(MainActivity.this, "Berhasil", 1);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        ToastMessage(MainActivity.this, "Gagal", 1);
+                    }
+                });
+                return false;
             }
         });
     }
