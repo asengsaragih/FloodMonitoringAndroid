@@ -1,14 +1,13 @@
 package com.kopisenja.floodmonitoring.activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -17,21 +16,22 @@ import android.Manifest;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.kopisenja.floodmonitoring.R;
 
 import java.util.ArrayList;
-
-import static com.kopisenja.floodmonitoring.base.FunctionClass.ToastMessage;
 
 public class IndexActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -44,6 +44,15 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
 
     private ConstraintLayout mTrueConstraintLayout, mLocationDeniedConstraintLayout, mInternetDeniedConstraintLayout;
     private Button mRetryLocationButton;
+    private ImageView mHistoryImageView;
+    private BottomSheetDialog mBottomSheetDialog;
+
+    private TextView mCategoryTextview;
+    private TextView mLocationTextview;
+    private TextView mDateTextview;
+    private TextView mTimeTextview;
+    private TextView mDebitTextview;
+    private TextView mLevelTextview;
 
     LatLng location1 = new LatLng(-6.975464, 107.633257);
     LatLng location2 = new LatLng(-6.993728, 107.631702);
@@ -56,21 +65,36 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         mTrueConstraintLayout = findViewById(R.id.constraint_index_location_true);
         mLocationDeniedConstraintLayout = findViewById(R.id.constraint_index_location_false);
         mRetryLocationButton = findViewById(R.id.button_index_location_retry);
+        mHistoryImageView = findViewById(R.id.imageView_index_history);
 
         checkLocationPermission();
+        intentToHistory();
+        initializeBottomSheet();
     }
 
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        checkLocationPermission();
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        checkLocationPermission();
-//    }
+    private void intentToHistory() {
+        mHistoryImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
+                startActivity(intent);
+//                mBottomSheetDialog.show();
+            }
+        });
+    }
+
+    private void initializeBottomSheet() {
+        mBottomSheetDialog = new BottomSheetDialog(this);
+        mBottomSheetDialog.setContentView(R.layout.bottomsheet_dialog_index);
+        mBottomSheetDialog.setCanceledOnTouchOutside(true);
+
+        mCategoryTextview = mBottomSheetDialog.findViewById(R.id.textView_index_category);
+        mLocationTextview = mBottomSheetDialog.findViewById(R.id.textView_index_location);
+        mDateTextview = mBottomSheetDialog.findViewById(R.id.textView_index_date);
+        mTimeTextview = mBottomSheetDialog.findViewById(R.id.textView_index_time);
+        mDebitTextview = mBottomSheetDialog.findViewById(R.id.textView_index_debit);
+        mLevelTextview = mBottomSheetDialog.findViewById(R.id.textView_index_level);
+    }
 
     private void setLocation() {
         mLocation.add(location1);
@@ -85,9 +109,16 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                mBottomSheetDialog.show();
+                return false;
+            }
+        });
+
         for (int i = 0; i < mLocation.size() ; i++) {
             mMap.addMarker(new MarkerOptions().position(mLocation.get(i)).title("Location"));
-//            mMap.animateCamera(CameraUpdateFactory.zoomTo(new LatLng(location1, 15f)));
             int calcutateDistance =  calculateDistance();
 
             if (calcutateDistance == 1) {

@@ -4,4 +4,10 @@
     <string name="no_location_access">Access Location Denied</string>
     <string name="turn_location_on">Turn On Location</string>
     <string name="no_location_found">Can\'t Get Current Location</string>
+
+    <string name="category_normal">Normal</string>
+    <string name="category_standby">Siaga</string>
+    <string name="category_danger">Berbahaya</string>
+
+    <string name="example_debit">300.03\nLiter/Detik</string>
 </resources>
