@@ -101,7 +101,7 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         mDebitTextview = mBottomSheetDialog.findViewById(R.id.textView_index_debit);
         mLevelTextview = mBottomSheetDialog.findViewById(R.id.textView_index_level);
 
-        getCurrentData();
+        getCurrentData(1);
     }
 
     private void setLocation() {
@@ -113,27 +113,48 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
     }
 
-    private void getCurrentData() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Recent");
+    private void getCurrentData(int locationDevice) {
+        DatabaseReference reference;
+
+        if (locationDevice == 1) {
+            reference = FirebaseDatabase.getInstance().getReference().child("Recent").child("Device1");
+        } else {
+            reference = FirebaseDatabase.getInstance().getReference().child("Recent").child("Device2");
+        }
+
         Query lastQuery = reference.orderByKey().limitToLast(1);
         lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String date = dataSnapshot.child("date").getValue(String.class);
-                String time = dataSnapshot.child("time").getValue(String.class);
-                String location = dataSnapshot.child("location").getValue(String.class);
-                String debit = dataSnapshot.child("debit").getValue(String.class);
-                String level = dataSnapshot.child("level").getValue(String.class);
-                String category = dataSnapshot.child("category").getValue(String.class);
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    String key = data.getKey();
 
-//                mCategoryTextview.setText(category);
-//                mLocationTextview.setText(location);
-//                mDateTextview.setText(date);
-//                mTimeTextview.setText(time);
-//                mDebitTextview.setText(debit);
-//                mLevelTextview.setText(level);
+                    String date = dataSnapshot.child(key).child("date").getValue(String.class);
+                    String time = dataSnapshot.child(key).child("time").getValue(String.class);
+                    String location = dataSnapshot.child(key).child("location").getValue(String.class);
+                    String debit = dataSnapshot.child(key).child("debit").getValue(String.class);
+                    String level = dataSnapshot.child(key).child("level").getValue(String.class);
+                    Integer category = dataSnapshot.child(key).child("category").getValue(Integer.class);
 
-                Log.d("TES_FIREBASE", category + " " + location);
+                    Log.d("TES_FIREBASE", date + " " + time);
+
+                    if (category == 1) {
+                        mCategoryTextview.setText(getString(R.string.category_normal));
+                        mCategoryTextview.setTextColor(getResources().getColor(R.color.colorGreen));
+                    } else if (category == 2) {
+                        mCategoryTextview.setText(getString(R.string.category_standby));
+                        mCategoryTextview.setTextColor(getResources().getColor(R.color.colorYellow));
+                    } else {
+                        mCategoryTextview.setText(getString(R.string.category_danger));
+                        mCategoryTextview.setTextColor(getResources().getColor(R.color.colorRed));
+                    }
+
+                    mLocationTextview.setText(location);
+                    mDateTextview.setText(date);
+                    mTimeTextview.setText(time);
+                    mDebitTextview.setText(debit);
+                    mLevelTextview.setText(level);
+                }
             }
 
             @Override
@@ -141,38 +162,6 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
 
             }
         });
-//        lastQuery.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                String date = dataSnapshot.child("date").getValue(String.class);
-//                String time = dataSnapshot.child("time").getValue(String.class);
-//                String location = dataSnapshot.child("location").getValue(String.class);
-//                String debit = dataSnapshot.child("debit").getValue(String.class);
-//                String level = dataSnapshot.child("level").getValue(String.class);
-//                String category = dataSnapshot.child("category").getValue(String.class);
-//
-////                mCategoryTextview.setText(category);
-////                mLocationTextview.setText(location);
-////                mDateTextview.setText(date);
-////                mTimeTextview.setText(time);
-////                mDebitTextview.setText(debit);
-////                mLevelTextview.setText(level);
-//
-//                Log.d("TES_FIREBASE", category + " " + location);
-//
-//                mCategoryTextview.setText("category");
-//                mLocationTextview.setText("location");
-//                mDateTextview.setText("date");
-//                mTimeTextview.setText("time");
-//                mDebitTextview.setText("debit");
-//                mLevelTextview.setText("Level");
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
     }
 
     @Override

@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         clickableTextview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDatabaseReferences = FirebaseDatabase.getInstance().getReference("Recent");
+                mDatabaseReferences = FirebaseDatabase.getInstance().getReference("Recent").child("Device1");
                 String keyID = mDatabaseReferences.push().getKey();
                 mDatabaseReferences.child(keyID).setValue(new Flood(
                         getCurrentDate(),
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         clickableTextview.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                mDatabaseReferences = FirebaseDatabase.getInstance().getReference("Recent");
+                mDatabaseReferences = FirebaseDatabase.getInstance().getReference("Recent").child("Device2");
                 String keyID = mDatabaseReferences.push().getKey();
                 mDatabaseReferences.child(keyID).setValue(new Flood(
                         getCurrentDate(),

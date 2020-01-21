@@ -28,7 +28,7 @@ public class FunctionClass {
 
     public static String getCurrentDate() {
         Date time = Calendar.getInstance().getTime();
-        SimpleDateFormat sfd = new SimpleDateFormat("dd MMMMM yyyy", Locale.getDefault());
+        SimpleDateFormat sfd = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
         String currentTime = sfd.format(time);
 
         return currentTime;
