@@ -10,4 +10,5 @@
     <string name="category_danger">Berbahaya</string>
 
     <string name="example_debit">300.03\nLiter/Detik</string>
+    <string name="empty_view">Data Kosong</string>
 </resources>

@@ -76,6 +76,7 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         checkLocationPermission();
         intentToHistory();
         initializeBottomSheet();
+        getCurrentData(1);
     }
 
     private void intentToHistory() {
@@ -84,7 +85,6 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
                 startActivity(intent);
-//                mBottomSheetDialog.show();
             }
         });
     }
@@ -100,8 +100,6 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         mTimeTextview = mBottomSheetDialog.findViewById(R.id.textView_index_time);
         mDebitTextview = mBottomSheetDialog.findViewById(R.id.textView_index_debit);
         mLevelTextview = mBottomSheetDialog.findViewById(R.id.textView_index_level);
-
-        getCurrentData(1);
     }
 
     private void setLocation() {
@@ -167,17 +165,18 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                mBottomSheetDialog.show();
-                return false;
-            }
-        });
-
         for (int i = 0; i < mLocation.size() ; i++) {
-            mMap.addMarker(new MarkerOptions().position(mLocation.get(i)).title("Location"));
+
+            final int indexLocation = i;
+            // location0 == 1
+            // location1 == 2
+
+            if (indexLocation == 0) {
+                mMap.addMarker(new MarkerOptions().position(mLocation.get(i)).title("Bojongsoang"));
+            } else {
+                mMap.addMarker(new MarkerOptions().position(mLocation.get(i)).title("Radio"));
+            }
+
             int calcutateDistance =  calculateDistance();
 
             if (calcutateDistance == 1) {
@@ -186,6 +185,14 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location2, 15f));
             }
         }
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                mBottomSheetDialog.show();
+                return false;
+            }
+        });
     }
 
     private void checkLocationPermission() {
