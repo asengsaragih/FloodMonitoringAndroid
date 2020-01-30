@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.google.firebase.database.ChildEventListener;
@@ -74,13 +75,50 @@ public class HistoryActivity extends AppCompatActivity {
         mHistoryRecycleView = findViewById(R.id.recycleView_history);
         mEmptyView = findViewById(R.id.emptyView_history);
 
-        showHistory();
+        showHistory(savedInstanceState);
+        setTitleBar(savedInstanceState);
     }
 
-    private void showHistory() {
+    private void setTitleBar(Bundle savedInstance) {
+        int idLocation = Integer.parseInt(idLocation(savedInstance));
+        if (idLocation == 1) {
+            getSupportActionBar().setTitle("Flood Bojongsoang");
+        } else {
+            getSupportActionBar().setTitle("Flood Radio");
+        }
+    }
+
+    private String idLocation(Bundle savedInstanceState) {
+        String id_location;
+
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras == null) {
+                return id_location = null;
+
+            } else {
+                return id_location = extras.getString("CODE_LOCATION");
+            }
+        } else {
+            return id_location = (String) savedInstanceState.getSerializable("CODE_LOCATION");
+        }
+    }
+
+    private void showHistory(Bundle savedInstanceState) {
+        int idLocation = Integer.parseInt(idLocation(savedInstanceState));
+        Log.d("CODE_LOCATION", String.valueOf(idLocation));
+
         mData = new ArrayList<>();
         mDataId = new ArrayList<>();
-        mDatabase = FirebaseDatabase.getInstance().getReference("Recent").child("Device1");
+
+//        mDatabase = FirebaseDatabase.getInstance().getReference("Recent").child("Device1");
+
+        if (idLocation == 1) {
+            mDatabase = FirebaseDatabase.getInstance().getReference("Recent").child("Device1");
+        } else {
+            mDatabase = FirebaseDatabase.getInstance().getReference("Recent").child("Device2");
+        }
+
         mDatabase.addChildEventListener(childEventListener);
 
         mHistoryRecycleView.setHasFixedSize(true);

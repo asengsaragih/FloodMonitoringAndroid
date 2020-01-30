@@ -86,6 +86,14 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
+                int calcutateDistance =  calculateDistance();
+
+                if (calcutateDistance == 1) {
+                    intent.putExtra("CODE_LOCATION", "1");
+                } else {
+                    intent.putExtra("CODE_LOCATION", "2");
+                }
+
                 startActivity(intent);
             }
         });
