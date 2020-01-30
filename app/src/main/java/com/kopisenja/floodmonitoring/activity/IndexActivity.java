@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,6 +39,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.kopisenja.floodmonitoring.R;
 
 import java.util.ArrayList;
+
+import static com.kopisenja.floodmonitoring.base.FunctionClass.ToastMessage;
 
 public class IndexActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -76,7 +79,6 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         checkLocationPermission();
         intentToHistory();
         initializeBottomSheet();
-        getCurrentData(1);
     }
 
     private void intentToHistory() {
@@ -160,6 +162,7 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
 
             }
         });
+        mBottomSheetDialog.show();
     }
 
     @Override
@@ -189,7 +192,14 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                mBottomSheetDialog.show();
+                LatLng position = marker.getPosition();
+
+                if (position.latitude == location1.latitude && position.longitude == location1.longitude) {
+                    getCurrentData(1);
+                } else if (position.latitude == location2.latitude && position.longitude == location2.longitude) {
+                    getCurrentData(2);
+                }
+
                 return false;
             }
         });
