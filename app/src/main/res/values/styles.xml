@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="TransparentDialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:colorBackground">@color/colorTransparent</item>
+        <item name="android:windowFrame">@null</item>
+    </style>
+
 </resources>

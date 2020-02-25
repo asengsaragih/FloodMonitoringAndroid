@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     private void getLocation() {
         LocationManager lm = (LocationManager) getSystemService(LOCATION_SERVICE);
-         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     }
 
     private void intentIndex() {
@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
                         getCurrentDate(),
                         getCurrentTime(),
                         "Bojongsoang",
-                        "300 L/D",
-                        "30 M",
+                        "12 L/m",
+                        "1.3 cm",
                         1,
                         1
                 )).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
                         getCurrentDate(),
                         getCurrentTime(),
                         "Radio",
-                        "350 L/D",
-                        "25 M",
+                        "19 L/m",
+                        "1.2 cm",
                         1,
                         1
                 )).addOnSuccessListener(new OnSuccessListener<Void>() {

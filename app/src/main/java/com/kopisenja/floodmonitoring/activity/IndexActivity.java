@@ -9,6 +9,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -100,9 +102,11 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
     }
 
     private void initializeBottomSheet() {
-        mBottomSheetDialog = new BottomSheetDialog(this);
+        mBottomSheetDialog = new BottomSheetDialog(this, R.style.TransparentDialog);
         mBottomSheetDialog.setContentView(R.layout.bottomsheet_dialog_index);
         mBottomSheetDialog.setCanceledOnTouchOutside(true);
+
+//        mBottomSheetDialog.getWindow().setBackgroundDrawableResource(R.color.colorTransparent);
 
         mCategoryTextview = mBottomSheetDialog.findViewById(R.id.textView_index_category);
         mLocationTextview = mBottomSheetDialog.findViewById(R.id.textView_index_location);
@@ -302,8 +306,14 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         Location loc1 = new Location("");
         Location loc2 = new Location("");
 
-        currentLocation.setLatitude(Double.parseDouble(mLatitude));
-        currentLocation.setLongitude(Double.parseDouble(mLongitude));
+//        Log.d("LOCATION", mLatitude);
+//        Log.d("LOCATION", mLongitude);
+
+//        LatLng location1 = new LatLng(-6.975464, 107.633257);
+//        LatLng location2 = new LatLng(-6.993728, 107.631702);
+
+        currentLocation.setLatitude(107.631702);
+        currentLocation.setLongitude(-6.993728);
 
         loc1.setLatitude(-6.975464);
         loc1.setLongitude(107.633257);
