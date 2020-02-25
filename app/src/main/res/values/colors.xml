@@ -8,4 +8,12 @@
     <color name="colorGreen">#00DC00</color>
     <color name="colorGrey">#858484</color>
     <color name="colorTransparent">#00000000</color>
+    
+    <color name="colorPalettePurple">#244457</color>
+    <color name="colorPaletteTosca">#78C7BB</color>
+    <color name="colorPaletteBlue">#93CFF2</color>
+    <color name="colorPaletteRed">#EB5757</color>
+    <color name="colorPaletteOrange">#F2994A</color>
+    <color name="colorPaletteYellow">#F2C94C</color>
+    <color name="colorPaletteDark">#59666D</color>
 </resources>

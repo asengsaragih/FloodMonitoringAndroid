@@ -58,12 +58,13 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
     private ImageView mHistoryImageView;
     private BottomSheetDialog mBottomSheetDialog;
 
+    private TextView mTimeTextview;
+    private TextView mDetailTextview;
     private TextView mCategoryTextview;
     private TextView mLocationTextview;
     private TextView mDateTextview;
-    private TextView mTimeTextview;
-    private TextView mDebitTextview;
-    private TextView mLevelTextview;
+    private TextView mOtherTextview;
+    private ImageView mStrokeImageView;
 
     LatLng location1 = new LatLng(-6.975464, 107.633257);
     LatLng location2 = new LatLng(-6.993728, 107.631702);
@@ -79,26 +80,19 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         mHistoryImageView = findViewById(R.id.imageView_index_history);
 
         checkLocationPermission();
-        intentToHistory();
         initializeBottomSheet();
     }
 
-    private void intentToHistory() {
-        mHistoryImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
-                int calcutateDistance =  calculateDistance();
+    private void intentToHistory(int location) {
+        Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
 
-                if (calcutateDistance == 1) {
-                    intent.putExtra("CODE_LOCATION", "1");
-                } else {
-                    intent.putExtra("CODE_LOCATION", "2");
-                }
+        if (location == 1) {
+            intent.putExtra("CODE_LOCATION", "1");
+        } else {
+            intent.putExtra("CODE_LOCATION", "2");
+        }
 
-                startActivity(intent);
-            }
-        });
+        startActivity(intent);
     }
 
     private void initializeBottomSheet() {
@@ -106,14 +100,14 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         mBottomSheetDialog.setContentView(R.layout.bottomsheet_dialog_index);
         mBottomSheetDialog.setCanceledOnTouchOutside(true);
 
-//        mBottomSheetDialog.getWindow().setBackgroundDrawableResource(R.color.colorTransparent);
+        mCategoryTextview = mBottomSheetDialog.findViewById(R.id.bottom_sheet_category_textview);
+        mLocationTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_location);
+        mDateTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_date);
+        mTimeTextview = mBottomSheetDialog.findViewById(R.id.bottom_sheet_time_textview);
+        mDetailTextview = mBottomSheetDialog.findViewById(R.id.bottom_sheet_detail_textview);
+        mOtherTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_other);
+        mStrokeImageView = mBottomSheetDialog.findViewById(R.id.imageView_bottom_sheet_stroke);
 
-        mCategoryTextview = mBottomSheetDialog.findViewById(R.id.textView_index_category);
-        mLocationTextview = mBottomSheetDialog.findViewById(R.id.textView_index_location);
-        mDateTextview = mBottomSheetDialog.findViewById(R.id.textView_index_date);
-        mTimeTextview = mBottomSheetDialog.findViewById(R.id.textView_index_time);
-        mDebitTextview = mBottomSheetDialog.findViewById(R.id.textView_index_debit);
-        mLevelTextview = mBottomSheetDialog.findViewById(R.id.textView_index_level);
     }
 
     private void setLocation() {
@@ -143,29 +137,44 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
 
                     String date = dataSnapshot.child(key).child("date").getValue(String.class);
                     String time = dataSnapshot.child(key).child("time").getValue(String.class);
-                    String location = dataSnapshot.child(key).child("location").getValue(String.class);
+                    final String location = dataSnapshot.child(key).child("location").getValue(String.class);
                     String debit = dataSnapshot.child(key).child("debit").getValue(String.class);
                     String level = dataSnapshot.child(key).child("level").getValue(String.class);
                     Integer category = dataSnapshot.child(key).child("category").getValue(Integer.class);
 
-                    Log.d("TES_FIREBASE", date + " " + time);
+//                    Log.d("TES_FIREBASE", date + " " + time);
 
                     if (category == 1) {
                         mCategoryTextview.setText(getString(R.string.category_normal));
-                        mCategoryTextview.setTextColor(getResources().getColor(R.color.colorGreen));
+//                        mCategoryTextview.setTextColor(getResources().getColor(R.color.colorGreen));
                     } else if (category == 2) {
                         mCategoryTextview.setText(getString(R.string.category_standby));
-                        mCategoryTextview.setTextColor(getResources().getColor(R.color.colorYellow));
+//                        mCategoryTextview.setTextColor(getResources().getColor(R.color.colorYellow));
                     } else {
                         mCategoryTextview.setText(getString(R.string.category_danger));
-                        mCategoryTextview.setTextColor(getResources().getColor(R.color.colorRed));
+//                        mCategoryTextview.setTextColor(getResources().getColor(R.color.colorRed));
                     }
 
                     mLocationTextview.setText(location);
                     mDateTextview.setText(date);
-                    mTimeTextview.setText(time);
-                    mDebitTextview.setText(debit);
-                    mLevelTextview.setText(level);
+                    mTimeTextview.setText(time + " WIB");
+                    mDetailTextview.setText(level + " " + debit);
+
+                    mOtherTextview.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+//                            Log.d("TES_KLIK", "BERHASIL " + location);
+                            Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
+
+                            if (location == "Bojongsoang") {
+                                intent.putExtra("CODE_LOCATION", "1");
+                            } else {
+                                intent.putExtra("CODE_LOCATION", "2");
+                            }
+
+                            startActivity(intent);
+                        }
+                    });
                 }
             }
 
