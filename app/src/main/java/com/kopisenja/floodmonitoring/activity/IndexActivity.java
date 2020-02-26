@@ -36,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.kopisenja.floodmonitoring.R;
+import com.kopisenja.floodmonitoring.adapter.HistoryAdapter;
 
 import java.util.ArrayList;
 
@@ -140,11 +141,22 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
     private void getCurrentData(int locationDevice) {
         DatabaseReference reference;
 
+        final Intent i = new Intent(getApplicationContext(), HistoryActivity.class);
+
         if (locationDevice == 1) {
             reference = FirebaseDatabase.getInstance().getReference().child("Recent").child("Device1");
+            i.putExtra("CODE_LOCATION", "1");
         } else {
             reference = FirebaseDatabase.getInstance().getReference().child("Recent").child("Device2");
+            i.putExtra("CODE_LOCATION", "2");
         }
+
+        mOtherTextview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(i);
+            }
+        });
 
         Query lastQuery = reference.orderByKey().limitToLast(1);
         lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {

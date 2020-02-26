@@ -7,9 +7,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +34,8 @@ public class HistoryActivity extends AppCompatActivity {
     private ArrayList<Flood> mData;
     private ArrayList<String> mDataId;
     private DatabaseReference mDatabase;
+    private ImageView mBackButton;
+    private TextView mTitleTextView;
 
     private ChildEventListener childEventListener = new ChildEventListener() {
         @Override
@@ -71,20 +77,32 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+        getSupportActionBar().hide();
 
         mHistoryRecycleView = findViewById(R.id.recycleView_history);
         mEmptyView = findViewById(R.id.emptyView_history);
+        mBackButton = findViewById(R.id.imageView_back);
+
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         showHistory(savedInstanceState);
-        setTitleBar(savedInstanceState);
+        showTitleBar();
     }
 
-    private void setTitleBar(Bundle savedInstance) {
-        int idLocation = Integer.parseInt(idLocation(savedInstance));
-        if (idLocation == 1) {
-            getSupportActionBar().setTitle("Flood Bojongsoang");
+    private void showTitleBar() {
+        mTitleTextView = findViewById(R.id.textView_title_history);
+
+        String text = "<font color='#828282'>Status Banjir</font><br><font color='#93CFF2'>Terkini</font>";
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mTitleTextView.setText(Html.fromHtml(text,  Html.FROM_HTML_MODE_LEGACY), TextView.BufferType.SPANNABLE);
         } else {
-            getSupportActionBar().setTitle("Flood Radio");
+            mTitleTextView.setText(Html.fromHtml(text), TextView.BufferType.SPANNABLE);
         }
     }
 
@@ -111,8 +129,6 @@ public class HistoryActivity extends AppCompatActivity {
         mData = new ArrayList<>();
         mDataId = new ArrayList<>();
 
-//        mDatabase = FirebaseDatabase.getInstance().getReference("Recent").child("Device1");
-
         if (idLocation == 1) {
             mDatabase = FirebaseDatabase.getInstance().getReference("Recent").child("Device1");
         } else {
@@ -128,8 +144,8 @@ public class HistoryActivity extends AppCompatActivity {
         linearLayoutManager.setStackFromEnd(true);
         mHistoryRecycleView.setLayoutManager(linearLayoutManager);
 
-        DividerItemDecoration divider = new DividerItemDecoration(this, linearLayoutManager.getOrientation());
-        mHistoryRecycleView.addItemDecoration(divider);
+//        DividerItemDecoration divider = new DividerItemDecoration(this, linearLayoutManager.getOrientation());
+//        mHistoryRecycleView.addItemDecoration(divider);
 
         mAdapter = new HistoryAdapter(this, mData, mDataId, mEmptyView, new HistoryAdapter.ClickHandler() {
             @Override

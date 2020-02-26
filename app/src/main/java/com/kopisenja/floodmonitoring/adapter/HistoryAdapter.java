@@ -63,12 +63,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             holder.categoryTextView.setTextColor(mContext.getResources().getColor(R.color.colorTextCategoryDanger));
         }
 
-//        holder.categoryTextView.setText(flood.getCategory() + "");
         holder.locationTextView.setText(flood.getLocation());
-        holder.dateTextView.setText(flood.getDate());
-        holder.timeTextView.setText(flood.getTime());
-        holder.debitTextView.setText(flood.getDebit());
-        holder.levelTextView.setText(flood.getLevel());
+        holder.dateTextView.setText(flood.getDate() + " " + flood.getTime());
+        holder.detailTextView.setText(flood.getLevel() + " " + flood.getDebit());
 
         holder.itemView.setSelected(mSelectedId.contains(mDataId.get(position)));
     }
@@ -104,9 +101,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         final TextView categoryTextView;
         final TextView locationTextView;
         final TextView dateTextView;
-        final TextView timeTextView;
-        final TextView debitTextView;
-        final TextView levelTextView;
+        final TextView detailTextView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -114,9 +109,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             categoryTextView = itemView.findViewById(R.id.textView_history_category);
             locationTextView = itemView.findViewById(R.id.textView_history_location);
             dateTextView = itemView.findViewById(R.id.textView_history_date);
-            timeTextView = itemView.findViewById(R.id.textView_history_time);
-            debitTextView = itemView.findViewById(R.id.textView_history_debit);
-            levelTextView = itemView.findViewById(R.id.textView_history_level);
+            detailTextView = itemView.findViewById(R.id.textView_history_detail);
 
             // focusable sengaja di false biar ngga bisa di klik
             itemView.setFocusable(false);
