@@ -1,6 +1,7 @@
 package com.kopisenja.floodmonitoring.activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -44,7 +45,7 @@ import java.util.ArrayList;
 
 import static com.kopisenja.floodmonitoring.base.FunctionClass.ToastMessage;
 
-public class IndexActivity extends FragmentActivity implements OnMapReadyCallback {
+public class IndexActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private ArrayList<LatLng> mLocation = new ArrayList<LatLng>();
@@ -55,7 +56,6 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
 
     private ConstraintLayout mTrueConstraintLayout, mLocationDeniedConstraintLayout, mInternetDeniedConstraintLayout;
     private Button mRetryLocationButton;
-    private ImageView mHistoryImageView;
     private BottomSheetDialog mBottomSheetDialog;
 
     private TextView mTimeTextview;
@@ -77,7 +77,6 @@ public class IndexActivity extends FragmentActivity implements OnMapReadyCallbac
         mTrueConstraintLayout = findViewById(R.id.constraint_index_location_true);
         mLocationDeniedConstraintLayout = findViewById(R.id.constraint_index_location_false);
         mRetryLocationButton = findViewById(R.id.button_index_location_retry);
-        mHistoryImageView = findViewById(R.id.imageView_index_history);
 
         checkLocationPermission();
         initializeBottomSheet();

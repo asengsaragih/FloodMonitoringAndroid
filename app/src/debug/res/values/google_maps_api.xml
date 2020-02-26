@@ -1,24 +1,3 @@
 <resources>
-    <!--
-    TODO: Before you run your application, you need a Google Maps API key.
-
-    To get one, follow this link, follow the directions and press "Create" at the end:
-
-    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=68:1D:5D:F0:40:81:93:10:BD:A9:D2:4C:65:81:90:4A:83:A4:1A:71%3Bcom.kopisenja.floodmonitoring.activity
-
-    You can also add your credentials to an existing key, using these values:
-
-    Package name:
-    68:1D:5D:F0:40:81:93:10:BD:A9:D2:4C:65:81:90:4A:83:A4:1A:71
-
-    SHA-1 certificate fingerprint:
-    68:1D:5D:F0:40:81:93:10:BD:A9:D2:4C:65:81:90:4A:83:A4:1A:71
-
-    Alternatively, follow the directions here:
-    https://developers.google.com/maps/documentation/android/start#get-key
-
-    Once you have your key (it starts with "AIza"), replace the "google_maps_key"
-    string in this file.
-    -->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCBXNiu_pb-9uW7cK-Zw75-Doty9H80ah4</string>
 </resources>
