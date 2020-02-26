@@ -27,7 +27,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:textColor="@color/colorYellow"
+        android:textColor="@color/colorTextCategoryStandBy"
         android:textSize="32sp"
         android:textStyle="bold"
         tools:text="@string/category_standby" />

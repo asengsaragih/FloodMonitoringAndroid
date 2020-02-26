@@ -54,13 +54,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         if (category == 1) {
             holder.categoryTextView.setText(mContext.getString(R.string.category_normal));
-            holder.categoryTextView.setTextColor(mContext.getResources().getColor(R.color.colorGreen));
+            holder.categoryTextView.setTextColor(mContext.getResources().getColor(R.color.colorTextCategoryNormal));
         } else if (category == 2) {
             holder.categoryTextView.setText(mContext.getString(R.string.category_standby));
-            holder.categoryTextView.setTextColor(mContext.getResources().getColor(R.color.colorYellow));
+            holder.categoryTextView.setTextColor(mContext.getResources().getColor(R.color.colorTextCategoryStandBy));
         } else {
             holder.categoryTextView.setText(mContext.getString(R.string.category_danger));
-            holder.categoryTextView.setTextColor(mContext.getResources().getColor(R.color.colorRed));
+            holder.categoryTextView.setTextColor(mContext.getResources().getColor(R.color.colorTextCategoryDanger));
         }
 
 //        holder.categoryTextView.setText(flood.getCategory() + "");

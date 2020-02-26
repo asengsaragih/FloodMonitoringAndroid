@@ -12,7 +12,11 @@
     <string name="example_debit">300.03\nLiter/Detik</string>
     <string name="empty_view">Data Kosong</string>
 
-
     <string name="default_notification_channel_id">Notification</string>
     <string name="fcm_message">Notification</string>
+
+    <string name="bottom_sheet_text_first">Lokasi anda berada pada status </string>
+    <string name="bottom_sheet_text_last_danger"> Maka berhati-hatilah!</string>
+    <string name="bottom_sheet_text_last_standby"> Maka berhati-hatilah!</string>
+    <string name="bottom_sheet_text_last_normal"> Maka berhati-hatilah!</string>
 </resources>

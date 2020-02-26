@@ -4,14 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -20,18 +17,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,8 +38,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.kopisenja.floodmonitoring.R;
 
 import java.util.ArrayList;
-
-import static com.kopisenja.floodmonitoring.base.FunctionClass.ToastMessage;
 
 public class IndexActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -58,13 +52,25 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
     private Button mRetryLocationButton;
     private BottomSheetDialog mBottomSheetDialog;
 
+    // bottom sheet initialize
     private TextView mTimeTextview;
     private TextView mDetailTextview;
     private TextView mCategoryTextview;
     private TextView mLocationTextview;
     private TextView mDateTextview;
     private TextView mOtherTextview;
-    private ImageView mStrokeImageView;
+    private TextView mLevelTextview;
+    private TextView mFlowTextview;
+    private TextView mCategoryMessageTextview;
+    private LinearLayout mDateTimeLinear;
+    private LinearLayout mDetailLinear;
+    private LinearLayout mCategoryLinear;
+    private ConstraintLayout mDateTimeConstraint;
+    private ConstraintLayout mDetailConstraint;
+    private ConstraintLayout mCategoryConstraint;
+    private ImageView mDateImageView;
+    private ImageView mDetailImageView;
+    private ImageView mCategoryImageView;
 
     LatLng location1 = new LatLng(-6.975464, 107.633257);
     LatLng location2 = new LatLng(-6.993728, 107.631702);
@@ -105,8 +111,21 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
         mTimeTextview = mBottomSheetDialog.findViewById(R.id.bottom_sheet_time_textview);
         mDetailTextview = mBottomSheetDialog.findViewById(R.id.bottom_sheet_detail_textview);
         mOtherTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_other);
-        mStrokeImageView = mBottomSheetDialog.findViewById(R.id.imageView_bottom_sheet_stroke);
+        mLevelTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_level);
+        mFlowTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_flow);
+        mCategoryMessageTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_category);
 
+        mDateTimeLinear = mBottomSheetDialog.findViewById(R.id.linear_dateTime);
+        mDetailLinear = mBottomSheetDialog.findViewById(R.id.linear_detail);
+        mCategoryLinear = mBottomSheetDialog.findViewById(R.id.linear_category);
+
+        mDateTimeConstraint = mBottomSheetDialog.findViewById(R.id.bottom_sheet_dateTime);
+        mDetailConstraint = mBottomSheetDialog.findViewById(R.id.bottom_sheet_detail);
+        mCategoryConstraint = mBottomSheetDialog.findViewById(R.id.bottom_sheet_category);
+
+        mDateImageView = mBottomSheetDialog.findViewById(R.id.bottom_sheet_location_textview);
+        mDetailImageView = mBottomSheetDialog.findViewById(R.id.bottom_sheet_imageview_detail);
+        mCategoryImageView = mBottomSheetDialog.findViewById(R.id.bottom_sheet_imageview_category);
     }
 
     private void setLocation() {
@@ -133,45 +152,94 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     String key = data.getKey();
-
                     String date = dataSnapshot.child(key).child("date").getValue(String.class);
                     String time = dataSnapshot.child(key).child("time").getValue(String.class);
-                    final String location = dataSnapshot.child(key).child("location").getValue(String.class);
+                    String location = dataSnapshot.child(key).child("location").getValue(String.class);
                     String debit = dataSnapshot.child(key).child("debit").getValue(String.class);
                     String level = dataSnapshot.child(key).child("level").getValue(String.class);
                     Integer category = dataSnapshot.child(key).child("category").getValue(Integer.class);
 
-//                    Log.d("TES_FIREBASE", date + " " + time);
+                    mTimeTextview.setText(time + " WIB");
+                    mDetailTextview.setText(level + " " + debit);
 
                     if (category == 1) {
                         mCategoryTextview.setText(getString(R.string.category_normal));
-//                        mCategoryTextview.setTextColor(getResources().getColor(R.color.colorGreen));
+                        mCategoryMessageTextview.setText(getString(R.string.bottom_sheet_text_first) + " " + getString(R.string.category_normal) + "\n" + getString(R.string.bottom_sheet_text_last_normal));
                     } else if (category == 2) {
                         mCategoryTextview.setText(getString(R.string.category_standby));
-//                        mCategoryTextview.setTextColor(getResources().getColor(R.color.colorYellow));
+                        mCategoryMessageTextview.setText(getString(R.string.bottom_sheet_text_first) + " " + getString(R.string.category_standby) + "\n" + getString(R.string.bottom_sheet_text_last_standby));
                     } else {
                         mCategoryTextview.setText(getString(R.string.category_danger));
-//                        mCategoryTextview.setTextColor(getResources().getColor(R.color.colorRed));
+                        mCategoryMessageTextview.setText(getString(R.string.bottom_sheet_text_first) + " " + getString(R.string.category_danger) + "\n" + getString(R.string.bottom_sheet_text_last_danger));
                     }
 
                     mLocationTextview.setText(location);
                     mDateTextview.setText(date);
-                    mTimeTextview.setText(time + " WIB");
-                    mDetailTextview.setText(level + " " + debit);
 
-                    mOtherTextview.setOnClickListener(new View.OnClickListener() {
+                    mLevelTextview.setText("Tinggi Air : " + level);
+                    mFlowTextview.setText("Debit Air : " + debit);
+
+
+                    mDateTimeConstraint.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-//                            Log.d("TES_KLIK", "BERHASIL " + location);
-                            Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
+                            mDateTimeLinear.setVisibility(View.VISIBLE);
+                            mDetailLinear.setVisibility(View.GONE);
+                            mCategoryLinear.setVisibility(View.GONE);
 
-                            if (location == "Bojongsoang") {
-                                intent.putExtra("CODE_LOCATION", "1");
-                            } else {
-                                intent.putExtra("CODE_LOCATION", "2");
-                            }
+                            mDateImageView.setImageResource(R.drawable.ic_time_24dp);
+                            mDetailImageView.setImageResource(R.drawable.ic_water_dark_24dp);
+                            mCategoryImageView.setImageResource(R.drawable.ic_warning_dark_24dp);
 
-                            startActivity(intent);
+                            mDateTimeConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteBlue));
+                            mDetailConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteTosca));
+                            mCategoryConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteTosca));
+
+                            mTimeTextview.setTextColor(getResources().getColor(R.color.colorTextWhite));
+                            mDetailTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
+                            mCategoryTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
+                        }
+                    });
+
+                    mDetailConstraint.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mDateTimeLinear.setVisibility(View.GONE);
+                            mDetailLinear.setVisibility(View.VISIBLE);
+                            mCategoryLinear.setVisibility(View.GONE);
+
+                            mDateImageView.setImageResource(R.drawable.ic_time_dark_24dp);
+                            mDetailImageView.setImageResource(R.drawable.ic_water_24dp);
+                            mCategoryImageView.setImageResource(R.drawable.ic_warning_dark_24dp);
+
+                            mDateTimeConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteTosca));
+                            mDetailConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteBlue));
+                            mCategoryConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteTosca));
+
+                            mTimeTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
+                            mDetailTextview.setTextColor(getResources().getColor(R.color.colorTextWhite));
+                            mCategoryTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
+                        }
+                    });
+
+                    mCategoryConstraint.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mDateTimeLinear.setVisibility(View.GONE);
+                            mDetailLinear.setVisibility(View.GONE);
+                            mCategoryLinear.setVisibility(View.VISIBLE);
+
+                            mDateImageView.setImageResource(R.drawable.ic_time_dark_24dp);
+                            mDetailImageView.setImageResource(R.drawable.ic_water_dark_24dp);
+                            mCategoryImageView.setImageResource(R.drawable.ic_warning_24dp);
+
+                            mDateTimeConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteTosca));
+                            mDetailConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteTosca));
+                            mCategoryConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteBlue));
+
+                            mTimeTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
+                            mDetailTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
+                            mCategoryTextview.setTextColor(getResources().getColor(R.color.colorTextWhite));
                         }
                     });
                 }
