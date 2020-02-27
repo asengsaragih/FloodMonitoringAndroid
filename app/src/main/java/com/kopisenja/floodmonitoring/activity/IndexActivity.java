@@ -14,6 +14,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.Manifest;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -204,8 +206,8 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                             mCategoryImageView.setImageResource(R.drawable.ic_warning_dark_24dp);
 
                             mDateTimeConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteBlue));
-                            mDetailConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteTosca));
-                            mCategoryConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteTosca));
+                            mDetailConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteGray));
+                            mCategoryConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteGray));
 
                             mTimeTextview.setTextColor(getResources().getColor(R.color.colorTextWhite));
                             mDetailTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
@@ -224,9 +226,9 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                             mDetailImageView.setImageResource(R.drawable.ic_water_24dp);
                             mCategoryImageView.setImageResource(R.drawable.ic_warning_dark_24dp);
 
-                            mDateTimeConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteTosca));
+                            mDateTimeConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteGray));
                             mDetailConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteBlue));
-                            mCategoryConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteTosca));
+                            mCategoryConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteGray));
 
                             mTimeTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
                             mDetailTextview.setTextColor(getResources().getColor(R.color.colorTextWhite));
@@ -245,8 +247,8 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                             mDetailImageView.setImageResource(R.drawable.ic_water_dark_24dp);
                             mCategoryImageView.setImageResource(R.drawable.ic_warning_24dp);
 
-                            mDateTimeConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteTosca));
-                            mDetailConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteTosca));
+                            mDateTimeConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteGray));
+                            mDetailConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteGray));
                             mCategoryConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteBlue));
 
                             mTimeTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
@@ -263,6 +265,22 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
             }
         });
         mBottomSheetDialog.show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.info_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_about:
+                startActivity(new Intent(getApplicationContext(), AboutActivity.class));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -1,10 +1,12 @@
 package com.kopisenja.floodmonitoring.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kopisenja.floodmonitoring.R;
 import com.kopisenja.floodmonitoring.base.Flood;
@@ -12,6 +14,7 @@ import com.kopisenja.floodmonitoring.base.Flood;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
@@ -47,7 +50,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         Flood flood = mData.get(position);
 
         int category = flood.getCategory();
@@ -66,6 +69,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.locationTextView.setText(flood.getLocation());
         holder.dateTextView.setText(flood.getDate() + " " + flood.getTime());
         holder.detailTextView.setText(flood.getLevel() + " " + flood.getDebit());
+
+        holder.boxConstraint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         holder.itemView.setSelected(mSelectedId.contains(mDataId.get(position)));
     }
@@ -102,6 +112,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         final TextView locationTextView;
         final TextView dateTextView;
         final TextView detailTextView;
+        final ConstraintLayout boxConstraint;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -110,6 +121,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             locationTextView = itemView.findViewById(R.id.textView_history_location);
             dateTextView = itemView.findViewById(R.id.textView_history_date);
             detailTextView = itemView.findViewById(R.id.textView_history_detail);
+            boxConstraint = itemView.findViewById(R.id.constraint_list_item_history);
 
             // focusable sengaja di false biar ngga bisa di klik
             itemView.setFocusable(false);

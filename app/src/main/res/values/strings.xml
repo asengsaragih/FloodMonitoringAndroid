@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">Flood Monitoring</string>
+    <string name="app_name">Monitoring Banjir</string>
     <string name="title_activity_index">Map</string>
     <string name="no_location_access">Access Location Denied</string>
     <string name="turn_location_on">Turn On Location</string>
     <string name="no_location_found">Can\'t Get Current Location</string>
 
-    <string name="category_normal">Normal</string>
+    <string name="category_normal">Aman</string>
     <string name="category_standby">Siaga</string>
-    <string name="category_danger">Berbahaya</string>
+    <string name="category_danger">Awas</string>
 
     <string name="example_debit">300.03\nLiter/Detik</string>
     <string name="empty_view">Data Kosong</string>
@@ -15,8 +15,14 @@
     <string name="default_notification_channel_id">Notification</string>
     <string name="fcm_message">Notification</string>
 
+    <string name="developer_name_aldi">Aldi Wahyu Saragih</string>
+    <string name="developer_name_hanna">Athiyyatul Farhanah</string>
+
     <string name="bottom_sheet_text_first">Lokasi anda berada pada status </string>
     <string name="bottom_sheet_text_last_danger"> Maka berhati-hatilah!</string>
     <string name="bottom_sheet_text_last_standby"> Maka berhati-hatilah!</string>
     <string name="bottom_sheet_text_last_normal"> Maka berhati-hatilah!</string>
+    <string name="activity_about">Tentang Kami</string>
+    <string name="about_application_version">Kopi Senja | v 1.0</string>
+    <string name="about_application_content">Aplikasi Monitoring Banjir adalah aplikasi yang dibuat khusus untuk masyarakat agar lebih mudah mendapatkan informasi bahaya banjir dan produk ini merupakan sebuah research tim kami dalam rangka tugas Proyek Akhir D3 Rekayasa Perangkat Lunak Aplikasi, Telkom University</string>
 </resources>

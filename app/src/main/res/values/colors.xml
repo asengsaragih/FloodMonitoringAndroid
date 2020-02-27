@@ -13,8 +13,10 @@
     <color name="colorPaletteOrange">#F2994A</color>
     <color name="colorPaletteYellow">#F2C94C</color>
     <color name="colorPaletteDark">#59666D</color>
+    <color name="colorPaletteGray">#E0E0E0</color>
 
     <color name="colorTextWhite">#ffffff</color>
+    <color name="colorTextShadow">#26000000</color>
     <color name="colorTextDark">#828282</color>
     <color name="colorTextExtraDark">#4F4F4F</color>
     <color name="colorTextCategoryNormal">#27AE60</color>
