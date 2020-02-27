@@ -1,6 +1,9 @@
 package com.kopisenja.floodmonitoring.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.os.Build;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,9 +54,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        Flood flood = mData.get(position);
+        final Flood flood = mData.get(position);
 
-        int category = flood.getCategory();
+        final int category = flood.getCategory();
 
         if (category == 1) {
             holder.categoryTextView.setText(mContext.getString(R.string.category_normal));
@@ -73,7 +76,44 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.boxConstraint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.TransparentDialogCustom);
+                View detailView = View.inflate(mContext, R.layout.custom_dialog_history, null);
 
+                TextView statusTextview = detailView.findViewById(R.id.textView_dialog_history_status);
+                TextView lokasiTextview = detailView.findViewById(R.id.textView_dialog_history_lokasi);
+                TextView tanggalTextview = detailView.findViewById(R.id.textView_dialog_history_tanggal);
+                TextView waktuTextview = detailView.findViewById(R.id.textView_dialog_history_waktu);
+                TextView tinggiTextview = detailView.findViewById(R.id.textView_dialog_history_tinggi);
+                TextView debitTextview = detailView.findViewById(R.id.textView_dialog_history_debit);
+
+                String text = "";
+
+                if (category == 1) {
+                    text = "<font color='#4F4F4F'>" + "Status \t\t\t\t: " + "</font>" + "<font color='#27AE60'><b>" + mContext.getString(R.string.category_normal) + "</font></b>";
+                } else if (category == 2) {
+                    text = "<font color='#4F4F4F'>" + "Status \t\t\t\t: " + "</font>" + "<font color='#F2C94C'><b>" + mContext.getString(R.string.category_standby) + "</font></b>";
+                } else {
+                    text = "<font color='#4F4F4F'>" + "Status \t\t\t\t: " + "</font>" + "<font color='#EB5757'><b>" + mContext.getString(R.string.category_danger) + "</font></b>";
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    statusTextview.setText(Html.fromHtml(text,  Html.FROM_HTML_MODE_LEGACY), TextView.BufferType.SPANNABLE);
+                } else {
+                    statusTextview.setText(Html.fromHtml(text), TextView.BufferType.SPANNABLE);
+                }
+
+
+                lokasiTextview.setText("Lokasi \t\t\t\t: " + flood.getLocation());
+                tanggalTextview.setText("Tanggal \t\t\t: " + flood.getDate());
+                waktuTextview.setText("Waktu \t\t\t\t: " + flood.getTime());
+                tinggiTextview.setText("Tinggi \t\t\t\t\t: " + flood.getLevel());
+
+                String[] debit = flood.getDebit().split(" ");
+                debitTextview.setText("Debit \t\t\t\t\t: " + debit[0] + " Liter/menit");
+
+
+                builder.setView(detailView);
+                builder.show();
             }
         });
 

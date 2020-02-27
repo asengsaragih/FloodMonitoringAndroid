@@ -13,4 +13,8 @@
         <item name="android:windowFrame">@null</item>
     </style>
 
+    <style name="TransparentDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/radius_dialog_history</item>
+    </style>
+
 </resources>
