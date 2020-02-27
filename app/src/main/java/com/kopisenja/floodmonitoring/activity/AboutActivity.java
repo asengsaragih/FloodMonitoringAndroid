@@ -3,6 +3,9 @@ package com.kopisenja.floodmonitoring.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -13,6 +16,15 @@ import android.widget.TextView;
 import com.kopisenja.floodmonitoring.R;
 
 public class AboutActivity extends AppCompatActivity {
+
+    String emailAldi = "aldiwahyu.saragih@gmail.com";
+    String emailHanna = "athiyyatulfarhanah14@gmail.com";
+
+    String instagramAldi = "aldi_saragih";
+    String instagramHanna = "afarhannah";
+
+    String githubAldi = "asengsaragih";
+    String dribbbleHanna = "afarhanah";
 
     private TextView mTitleAppTextView;
     private TextView mTitleAboutDeveloperTextView;
@@ -87,44 +99,72 @@ public class AboutActivity extends AppCompatActivity {
         mInstagramAldiImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                intentInstagram(instagramAldi);
             }
         });
 
         mInstagramHannaImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                intentInstagram(instagramHanna);
             }
         });
 
         mGmailAldiImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                intentGmail(emailAldi);
             }
         });
 
         mGmailHannaImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                intentGmail(emailHanna);
             }
         });
 
         mGithubAldiImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://github.com/" + githubAldi)));
             }
         });
 
         mDribbbleHannaImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Uri uri = Uri.parse("http://dribbble.com/" + dribbbleHanna);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent.setPackage("mathieumaree.rippple");
 
+                try {
+                    startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://dribbble.com/" + dribbbleHanna)));
+                }
             }
         });
+    }
+
+    private void intentGmail(String username) {
+        Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto: " + username));
+        startActivity(Intent.createChooser(intent, "Send Feedback"));
+    }
+
+    private void intentInstagram(String username) {
+        Uri uri = Uri.parse("http://instagram.com/_u/" + username);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.setPackage("com.instagram.android");
+
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://www.instagram.com/" + username)));
+        }
     }
 
     private void showTitleApp() {
