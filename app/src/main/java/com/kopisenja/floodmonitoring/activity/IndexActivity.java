@@ -418,8 +418,11 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
 //        LatLng location1 = new LatLng(-6.975464, 107.633257);
 //        LatLng location2 = new LatLng(-6.993728, 107.631702);
 
-        currentLocation.setLatitude(107.631702);
-        currentLocation.setLongitude(-6.993728);
+//        currentLocation.setLatitude(107.631702);
+//        currentLocation.setLongitude(-6.993728);
+
+        currentLocation.setLatitude(Double.parseDouble(mLatitude));
+        currentLocation.setLongitude(Double.parseDouble(mLongitude));
 
         loc1.setLatitude(-6.975464);
         loc1.setLongitude(107.633257);
