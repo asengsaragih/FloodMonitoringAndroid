@@ -8,6 +8,10 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -15,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.kopisenja.floodmonitoring.R;
+import com.kopisenja.floodmonitoring.base.Flood;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -41,14 +46,23 @@ public class ChartActivity extends AppCompatActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot valueSnapshot : dataSnapshot.getChildren()) {
-//                    String time = valueSnapshot.getValue()
-//                }
-//                String time = dataSnapshot.child(dataSnapshot.getKey()).child("time").getValue(String.class);
-//
-//                Log.d("TES_KONSOL", time);
+                ArrayList<Entry> debitVals = new ArrayList<Entry>();
+                ArrayList<Entry> levelVals = new ArrayList<Entry>();
 
-                collectDebit((Map<String, Object>) dataSnapshot.getValue());
+                if (dataSnapshot.hasChildren()) {
+
+                    int i = 0;
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        Flood flood = snapshot.getValue(Flood.class);
+
+                        Float debit = Float.parseFloat(flood.getDebit().replace(" L/m", ""));
+                        Float level = Float.parseFloat(flood.getLevel().replace(" cm", ""));
+
+                        levelVals.add(new Entry(i++, level));
+                        debitVals.add(new Entry(i++, debit));
+                    }
+                    showChart(debitVals, levelVals);
+                }
             }
 
             @Override
@@ -58,17 +72,17 @@ public class ChartActivity extends AppCompatActivity {
         });
     }
 
-    private void collectDebit(Map<String,Object> value) {
-        ArrayList<String> debit = new ArrayList<>();
+    private void showChart(ArrayList<Entry> debitVals, ArrayList<Entry> levelVals) {
+        LineDataSet lineDataSet1 = new LineDataSet(debitVals, "debit");
+        LineDataSet lineDataSet2 = new LineDataSet(levelVals, "level");
 
-        for (Map.Entry<String, Object> entry : value.entrySet()) {
-            Map singleData = (Map) entry.getValue();
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
 
-            debit.add((String) singleData.get("debit"));
-        }
+        dataSets.add(lineDataSet1);
+        dataSets.add(lineDataSet2);
+        LineData lineData = new LineData(dataSets);
 
-        Log.d("TES_KONSOL", debit.toString());
+        mDataLineChart.setData(lineData);
+        mDataLineChart.invalidate();
     }
-
-
 }
