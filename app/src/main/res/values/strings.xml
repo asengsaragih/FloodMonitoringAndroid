@@ -26,4 +26,12 @@
     <string name="about_application_version">Kopi Senja | v 1.0</string>
     <string name="about_application_content">Aplikasi Monitoring Banjir adalah aplikasi yang dibuat khusus untuk masyarakat agar lebih mudah mendapatkan informasi bahaya banjir dan produk ini merupakan sebuah research tim kami dalam rangka tugas Proyek Akhir D3 Rekayasa Perangkat Lunak Aplikasi, Telkom University</string>
     <string name="detail_info">Detail Info</string>
+
+    <string name="btn_intro_next">Selanjutnya</string>
+    <string name="btn_intro_skip">Lewati</string>
+
+    <string name="title_intro_one">Mendeteksi Area Banjir Disekitar</string>
+    <string name="title_intro_two">Memberikan Notifikasi Ketika Terjadi Banjir</string>
+    <string name="content_intro_one">Memberikan keadaan status banjir disekitarmu, jika tekanan air akan berada diatas batas normal</string>
+    <string name="content_intro_two">Notifikasi akan diberikan ketika lokasi anda berada pada status bahaya</string>
 </resources>
