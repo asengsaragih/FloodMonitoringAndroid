@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ScrollView;
 
 import com.kopisenja.floodmonitoring.R;
+import com.kopisenja.floodmonitoring.base.PrefManagerIntro;
 
 public class IntroActivity extends AppCompatActivity {
 
@@ -16,12 +17,18 @@ public class IntroActivity extends AppCompatActivity {
     private ScrollView mIntroTwoScrollView;
     private Button mSkipButton;
     private Button mNextButton;
+    private PrefManagerIntro mSessionIntro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
         getSupportActionBar().hide();
+
+        mSessionIntro = new PrefManagerIntro(this);
+        if (mSessionIntro.intro()) {
+            startActivity(new Intent(this, IndexActivity.class));
+        }
 
         mIntroOneScrollView = findViewById(R.id.scrollView_intro_one);
         mIntroTwoScrollView = findViewById(R.id.scrollView_intro_two);
@@ -40,6 +47,7 @@ public class IntroActivity extends AppCompatActivity {
                     mIntroOneScrollView.setVisibility(View.GONE);
                     mIntroTwoScrollView.setVisibility(View.VISIBLE);
                 } else {
+                    mSessionIntro.setIntro(true);
                     Intent i = new Intent(getApplicationContext(), IndexActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
@@ -50,6 +58,7 @@ public class IntroActivity extends AppCompatActivity {
         mSkipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mSessionIntro.setIntro(true);
                 Intent i = new Intent(getApplicationContext(), IndexActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
