@@ -13,7 +13,7 @@
         android:background="@drawable/btn_left_intro"
         android:padding="24dp"
         android:text="@string/btn_intro_skip"
-        android:textColor="@android:color/black"
+        android:textColor="@color/colorPaletteBlue"
         android:textSize="18sp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
