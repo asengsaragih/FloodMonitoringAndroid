@@ -9,20 +9,21 @@
         android:roundIcon="@drawable/ic_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.IntroActivity">
+        <activity android:name=".activity.OtherMarkerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.AboutActivity" />
-        <activity android:name=".activity.HistoryActivity" />
-        <activity android:name=".activity.IndexActivity">
+        <activity android:name=".activity.IntroActivity">
 
         </activity>
-        <activity android:name=".activity.MainActivity" />
-
+        <activity android:name=".activity.AboutActivity" />
+        <activity android:name=".activity.HistoryActivity" />
+        <activity android:name=".activity.IndexActivity"></activity>
+        <activity android:name=".activity.MainActivity">
+        </activity>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -35,10 +36,10 @@
     </application>
 
     <uses-feature android:name="android.hardware.location.gps" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
 </manifest>

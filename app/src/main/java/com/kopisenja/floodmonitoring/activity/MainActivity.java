@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kopisenja.floodmonitoring.R;
 import com.kopisenja.floodmonitoring.base.Flood;
+import com.kopisenja.floodmonitoring.base.OtherMarker;
 
 import java.util.Calendar;
 
@@ -60,25 +61,35 @@ public class MainActivity extends AppCompatActivity {
         clickableTextview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDatabaseReferences = FirebaseDatabase.getInstance().getReference("Recent").child("Device1");
+//                mDatabaseReferences = FirebaseDatabase.getInstance().getReference("Recent").child("Device1");
+//                String keyID = mDatabaseReferences.push().getKey();
+//                mDatabaseReferences.child(keyID).setValue(new Flood(
+//                        getCurrentDate(),
+//                        getCurrentTime(),
+//                        "Bojongsoang",
+//                        "12 L/m",
+//                        "1.3 cm",
+//                        1,
+//                        1
+//                )).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        ToastMessage(MainActivity.this, "Berhasil", 1);
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        ToastMessage(MainActivity.this, "Gagal", 1);
+//                    }
+//                });
+                mDatabaseReferences = FirebaseDatabase.getInstance().getReference("Marker");
                 String keyID = mDatabaseReferences.push().getKey();
-                mDatabaseReferences.child(keyID).setValue(new Flood(
-                        getCurrentDate(),
-                        getCurrentTime(),
-                        "Bojongsoang",
-                        "12 L/m",
-                        "1.3 cm",
-                        1,
-                        1
+                mDatabaseReferences.child(keyID).setValue(new OtherMarker(
+                        "Bojongsoang"
                 )).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         ToastMessage(MainActivity.this, "Berhasil", 1);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        ToastMessage(MainActivity.this, "Gagal", 1);
                     }
                 });
             }

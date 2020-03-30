@@ -125,26 +125,26 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         return mData.size();
     }
 
-    public void toggleSelection(String dataId) {
-        if (mSelectedId.contains(dataId))
-            mSelectedId.remove(dataId);
-        else
-            mSelectedId.add(dataId);
-        notifyDataSetChanged();
-    }
-
-    public int selectionCount() {
-        return mSelectedId.size();
-    }
-
-    public void resetSelection() {
-        mSelectedId = new ArrayList<>();
-        notifyDataSetChanged();
-    }
-
-    public ArrayList<String> getSelectedId() {
-        return mSelectedId;
-    }
+//    public void toggleSelection(String dataId) {
+//        if (mSelectedId.contains(dataId))
+//            mSelectedId.remove(dataId);
+//        else
+//            mSelectedId.add(dataId);
+//        notifyDataSetChanged();
+//    }
+//
+//    public int selectionCount() {
+//        return mSelectedId.size();
+//    }
+//
+//    public void resetSelection() {
+//        mSelectedId = new ArrayList<>();
+//        notifyDataSetChanged();
+//    }
+//
+//    public ArrayList<String> getSelectedId() {
+//        return mSelectedId;
+//    }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 

@@ -3,6 +3,8 @@ package com.kopisenja.floodmonitoring.base;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.kopisenja.floodmonitoring.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,5 +34,33 @@ public class FunctionClass {
         String currentTime = sfd.format(time);
 
         return currentTime;
+    }
+
+    public String getCategoryFlood(int debit, int level) {
+        if (debit < 1) {
+            if (level < 2) {
+                return String.valueOf(R.string.category_normal);
+            } else if (level <= 3.5) {
+                return String.valueOf(R.string.category_standby);
+            } else {
+                return String.valueOf(R.string.category_standby);
+            }
+        } else if (debit < 2.5) {
+            if (level < 2) {
+                return String.valueOf(R.string.category_normal);
+            } else if (level <= 3.5) {
+                return String.valueOf(R.string.category_standby);
+            } else {
+                return String.valueOf(R.string.category_danger);
+            }
+        } else {
+            if (level < 2) {
+                return String.valueOf(R.string.category_normal);
+            } else if (level <= 3.5) {
+                return String.valueOf(R.string.category_standby);
+            } else {
+                return String.valueOf(R.string.category_danger);
+            }
+        }
     }
 }
