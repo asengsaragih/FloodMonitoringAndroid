@@ -1,8 +1,8 @@
-//fungsionalitas untuk tombol tombol yang berfungsi (eg. dialogcustombox, back button, next button dan lainnya)
-package com.kopisenja.floodmonitoring.UnitTesting;
+package com.kopisenja.floodmonitoring.UnitTesting.Functional;
 
 import com.kopisenja.floodmonitoring.R;
 import com.kopisenja.floodmonitoring.activity.IndexActivity;
+import com.kopisenja.floodmonitoring.activity.OtherMarkerActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,32 +20,29 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
-public class FunctionalTest {
+public class ChangeLocationMapsButtonTest {
 
     @Rule
     public ActivityTestRule<IndexActivity> activityTestRule = new ActivityTestRule<>(IndexActivity.class);
 
     @Test
-    public void testButtonAboutActivity() throws InterruptedException {
-        Thread.sleep(1000);
+    public void chageMaps() throws InterruptedException {
+        Thread.sleep(2000);
 
         try {
-            onView(withId(R.id.action_about)).perform(click());
+            onView(withId(R.id.action_other_marker)).perform(click());
         } catch (NoMatchingViewException e) {
             openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
-            onView(withText(R.string.activity_about)).perform(click());
+            onView(withText("Lokasi Lainnya")).perform(click());
         }
 
-        onView(withId(R.id.imageView_button_right)).perform(click());
-        onView(withId(R.id.imageView_button_left)).perform(click());
-        onView(withId(R.id.imageView_button_right)).perform(click());
-        onView(withId(R.id.imageView_button_left)).perform(click());
+        Thread.sleep(2000);
 
-        onView(withId(R.id.imageView_about_back)).perform(click());
-    }
-
-    @Test
-    public void test() {
-
+        try {
+            onView(withId(R.id.action_other_marker)).perform(click());
+        } catch (NoMatchingViewException e) {
+            openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+            onView(withText("Lokasi Lainnya")).perform(click());
+        }
     }
 }
