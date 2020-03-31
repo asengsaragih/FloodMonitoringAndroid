@@ -279,8 +279,25 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
             case R.id.action_about:
                 startActivity(new Intent(getApplicationContext(), AboutActivity.class));
                 return true;
+            case R.id.action_full_marker:
+                startActivity(new Intent(getApplicationContext(), OtherMarkerActivity.class));
+                return true;
+            case R.id.action_other_marker:
+                changeCameraMove();
+                return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void changeCameraMove() {
+        LatLng loc1 = new LatLng(-6.975464015049101, 107.63325713574885);
+        LatLng loc2 = new LatLng(-6.993728086127658, 107.63170212507248);
+
+        if (mMap.getCameraPosition().target.equals(loc1)) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location2, 15f));
+        } else {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location1, 15f));
+        }
     }
 
     @Override
@@ -293,7 +310,7 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
             // location1 == 2
 
             if (indexLocation == 0) {
-                mMap.addMarker(new MarkerOptions().position(mLocation.get(i)).title("Bojongsoang"));
+                mMap.addMarker(new MarkerOptions().position(mLocation.get(i)).title("Bojongsoang")).showInfoWindow();
             } else {
                 mMap.addMarker(new MarkerOptions().position(mLocation.get(i)).title("Radio"));
             }

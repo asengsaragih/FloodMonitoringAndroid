@@ -28,13 +28,8 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
-import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
-import static androidx.test.espresso.matcher.ViewMatchers.withHint;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
 public class IndexTesting {
@@ -43,15 +38,29 @@ public class IndexTesting {
     public ActivityTestRule<IndexActivity> activityTestRule = new ActivityTestRule<>(IndexActivity.class);
 
     @Test
-    public void testUiIndex() throws InterruptedException, UiObjectNotFoundException {
+    public void testUiIndex() throws InterruptedException {
         Thread.sleep(2000);
-//        onView(withContentDescription("Bojongsoang")).perform(click());
+//        onView(with("Bojongsoang")).perform(click());
 //        onView(isRoot()).perform(waitId())
-//        onView(withContentDescription("Bojongsoang")).perform(click());
+//        onView(withHint("Bojongsoang")).perform(click());
         UiDevice uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        UiObject marker = uiDevice.findObject(new UiSelector().descriptionContains("Bojongsoang"));
+        UiObject object = uiDevice.findObject(new UiSelector().descriptionContains("Bojongsoang"));
+
+        try {
+            object.click();
+        } catch (UiObjectNotFoundException e) {
+            e.printStackTrace();
+        }
+//        try {
+//            object.click();
+//        } catch (UiObjectNotFoundException e) {
+//            Log.d("ERROR_ESPRESSO", e.getMessage());
+//        }
+
+//        UiDevice uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+//        UiObject marker = uiDevice.findObject(new UiSelector().descriptionContains("Bojongsoang"));
 ////        UiObject iot2 = uiDevice.findObject(new UiSelector().descriptionContains("Radio"));
-        marker.click();
+//        marker.click();
 //        try {
 //
             Thread.sleep(2000);

@@ -3,7 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_other_marker"
-        android:title="@string/activity_about"
+        android:title="Lokasi Lainnya"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_full_marker"
+        android:title="Daftar Lokasi Perangkat"
         app:showAsAction="never"/>
     <item
         android:id="@+id/action_about"
