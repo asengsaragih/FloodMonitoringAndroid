@@ -28,8 +28,12 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 @RunWith(AndroidJUnit4.class)
 public class IndexTesting {
@@ -41,16 +45,18 @@ public class IndexTesting {
     public void testUiIndex() throws InterruptedException {
         Thread.sleep(2000);
 //        onView(with("Bojongsoang")).perform(click());
+        onView(withText("Bojongsoang")).perform(click());
 //        onView(isRoot()).perform(waitId())
 //        onView(withHint("Bojongsoang")).perform(click());
-        UiDevice uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        UiObject object = uiDevice.findObject(new UiSelector().descriptionContains("Bojongsoang"));
-
-        try {
-            object.click();
-        } catch (UiObjectNotFoundException e) {
-            e.printStackTrace();
-        }
+//        onView(withContentDescription("Bojongsoang")).perform(click());
+//        UiDevice uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+//        UiObject object = uiDevice.findObject(new UiSelector().text("Bojongsoang"));
+//
+//        try {
+//            object.click();
+//        } catch (UiObjectNotFoundException e) {
+//            e.printStackTrace();
+//        }
 //        try {
 //            object.click();
 //        } catch (UiObjectNotFoundException e) {
@@ -72,40 +78,40 @@ public class IndexTesting {
 //        }
     }
 
-    public static ViewAction waitId(final int viewId, final long millis) {
-        return new ViewAction() {
-            @Override
-            public Matcher<View> getConstraints() {
-                return isRoot();
-            }
-
-            @Override
-            public String getDescription() {
-                return "wait for a spesific view with id <" + viewId + "> during " + millis + " millis.";
-            }
-
-            @Override
-            public void perform(final UiController uiController, View view) {
-                uiController.loopMainThreadUntilIdle();
-                final long startTime = System.currentTimeMillis();
-                final long endTime = startTime + millis;
-                final Matcher<View> viewMatcher = withId(viewId);
-
-                do {
-                    for (View child : TreeIterables.breadthFirstViewTraversal(view)) {
-                        if (viewMatcher.matches(child)) {
-                            return;
-                        }
-                    }
-                } while (System.currentTimeMillis() < endTime);
-
-                //timeout happens
-                throw new PerformException.Builder()
-                        .withActionDescription(this.getDescription())
-                        .withViewDescription(HumanReadables.describe(view))
-                        .withCause(new TimeoutException())
-                        .build();
-            }
-        };
-    }
+//    public static ViewAction waitId(final int viewId, final long millis) {
+//        return new ViewAction() {
+//            @Override
+//            public Matcher<View> getConstraints() {
+//                return isRoot();
+//            }
+//
+//            @Override
+//            public String getDescription() {
+//                return "wait for a spesific view with id <" + viewId + "> during " + millis + " millis.";
+//            }
+//
+//            @Override
+//            public void perform(final UiController uiController, View view) {
+//                uiController.loopMainThreadUntilIdle();
+//                final long startTime = System.currentTimeMillis();
+//                final long endTime = startTime + millis;
+//                final Matcher<View> viewMatcher = withId(viewId);
+//
+//                do {
+//                    for (View child : TreeIterables.breadthFirstViewTraversal(view)) {
+//                        if (viewMatcher.matches(child)) {
+//                            return;
+//                        }
+//                    }
+//                } while (System.currentTimeMillis() < endTime);
+//
+//                //timeout happens
+//                throw new PerformException.Builder()
+//                        .withActionDescription(this.getDescription())
+//                        .withViewDescription(HumanReadables.describe(view))
+//                        .withCause(new TimeoutException())
+//                        .build();
+//            }
+//        };
+//    }
 }

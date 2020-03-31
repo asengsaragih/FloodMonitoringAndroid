@@ -35,4 +35,6 @@
     <string name="title_intro_two">Memberikan Notifikasi Ketika Terjadi Banjir</string>
     <string name="content_intro_one">Memberikan keadaan status banjir disekitarmu, jika tekanan air akan berada diatas batas normal</string>
     <string name="content_intro_two">Notifikasi akan diberikan ketika lokasi anda berada pada status bahaya</string>
+    <string name="no_connection">Tidak ada internet</string>
+    <string name="try_again">Coba Lagi</string>
 </resources>

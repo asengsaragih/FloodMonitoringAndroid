@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.Manifest;
 import android.util.Log;
@@ -53,6 +55,7 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
 
     private ConstraintLayout mTrueConstraintLayout, mLocationDeniedConstraintLayout, mInternetDeniedConstraintLayout;
     private Button mRetryLocationButton;
+    private Button mRetryConnectionButton;
     private BottomSheetDialog mBottomSheetDialog;
 
     // bottom sheet initialize
@@ -85,10 +88,51 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
 
         mTrueConstraintLayout = findViewById(R.id.constraint_index_location_true);
         mLocationDeniedConstraintLayout = findViewById(R.id.constraint_index_location_false);
-        mRetryLocationButton = findViewById(R.id.button_index_location_retry);
+        mInternetDeniedConstraintLayout = findViewById(R.id.recycleView_no_connection);
 
-        checkLocationPermission();
-        initializeBottomSheet();
+        mRetryLocationButton = findViewById(R.id.button_index_location_retry);
+        mRetryConnectionButton = findViewById(R.id.button_retry_connection);
+
+
+        if (isConnected() == true) {
+            mTrueConstraintLayout.setVisibility(View.VISIBLE);
+            mLocationDeniedConstraintLayout.setVisibility(View.GONE);
+            mInternetDeniedConstraintLayout.setVisibility(View.GONE);
+
+            checkLocationPermission();
+            initializeBottomSheet();
+        } else {
+            mTrueConstraintLayout.setVisibility(View.GONE);
+            mLocationDeniedConstraintLayout.setVisibility(View.GONE);
+            mInternetDeniedConstraintLayout.setVisibility(View.VISIBLE);
+
+
+        }
+
+        reconnectingInternet();
+    }
+
+    private void reconnectingInternet() {
+        mRetryConnectionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+                if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                        connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+                    //we are connected to a network
+                    mTrueConstraintLayout.setVisibility(View.VISIBLE);
+                    mLocationDeniedConstraintLayout.setVisibility(View.GONE);
+                    mInternetDeniedConstraintLayout.setVisibility(View.GONE);
+
+                    checkLocationPermission();
+                    initializeBottomSheet();
+                } else {
+                    mTrueConstraintLayout.setVisibility(View.GONE);
+                    mLocationDeniedConstraintLayout.setVisibility(View.GONE);
+                    mInternetDeniedConstraintLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     private void intentToHistory(int location) {
@@ -455,5 +499,16 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
         } else {
             return 2;
         }
+    }
+
+    private boolean isConnected() {
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            return true;
+        }
+        else
+            return false;
     }
 }
