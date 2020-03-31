@@ -105,8 +105,6 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
             mTrueConstraintLayout.setVisibility(View.GONE);
             mLocationDeniedConstraintLayout.setVisibility(View.GONE);
             mInternetDeniedConstraintLayout.setVisibility(View.VISIBLE);
-
-
         }
 
         reconnectingInternet();
@@ -339,8 +337,13 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
 
         if (mMap.getCameraPosition().target.equals(loc1)) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location2, 15f));
+            //abis ini di matiin cuma buat espresso doang
+            getCurrentData(2);
+
         } else {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location1, 15f));
+            //abis ini di matiin cuma buat espresso doang
+            getCurrentData(1);
         }
     }
 

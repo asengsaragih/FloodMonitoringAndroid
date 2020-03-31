@@ -29,9 +29,9 @@ public class HistoryButtonTest {
 
     @Test
     public void testHistory() throws InterruptedException {
-        Thread.sleep(2000);
+        Thread.sleep(5000);
         onView(withId(R.id.recycleView_other)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        Thread.sleep(2000);
+        Thread.sleep(5000);
         onView(withId(R.id.recycleView_history)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
     }
 }
