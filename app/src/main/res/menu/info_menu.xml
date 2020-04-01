@@ -4,11 +4,19 @@
     <item
         android:id="@+id/action_other_marker"
         android:title="Lokasi Lainnya"
+        android:visible="false"
         app:showAsAction="never"/>
     <item
         android:id="@+id/action_full_marker"
         android:title="Daftar Lokasi Perangkat"
+        android:visible="false"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_app"
+        android:title="Info Aplikasi"
+        app:showAsAction="never"/>
+
     <item
         android:id="@+id/action_about"
         android:title="@string/activity_about"

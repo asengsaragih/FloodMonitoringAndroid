@@ -318,8 +318,15 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_app:
+                Intent app = new Intent(getApplicationContext(), AboutActivity.class);
+                app.putExtra("INTENT_ABOUT", 0);
+                startActivity(app);
+                return true;
             case R.id.action_about:
-                startActivity(new Intent(getApplicationContext(), AboutActivity.class));
+                Intent about = new Intent(getApplicationContext(), AboutActivity.class);
+                about.putExtra("INTENT_ABOUT", 1);
+                startActivity(about);
                 return true;
             case R.id.action_full_marker:
                 startActivity(new Intent(getApplicationContext(), OtherMarkerActivity.class));

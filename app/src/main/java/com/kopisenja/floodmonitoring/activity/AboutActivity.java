@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -61,9 +62,25 @@ public class AboutActivity extends AppCompatActivity {
         mGithubAldiImageView = findViewById(R.id.imageView_github_aldi);
         mDribbbleHannaImageView = findViewById(R.id.imageView_dribbble_hanna);
 
+        checkIntent();
+
         showTitleApp();
         showTitleAboutUs();
         buttonFunction();
+
+
+    }
+
+    private void checkIntent() {
+        Bundle extras = getIntent().getExtras();
+        int text = extras.getInt("INTENT_ABOUT");
+
+        if (text == 1) {
+            mLeftImageView.setVisibility(View.VISIBLE);
+            mRightImageView.setVisibility(View.GONE);
+            mDeveloperConstraint.setVisibility(View.VISIBLE);
+            mAboutAppConstraint.setVisibility(View.GONE);
+        }
     }
 
     private void buttonFunction() {
