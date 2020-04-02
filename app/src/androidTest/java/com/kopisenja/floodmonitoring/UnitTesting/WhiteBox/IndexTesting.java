@@ -1,4 +1,4 @@
-package com.kopisenja.floodmonitoring.UnitTesting.Alpha;
+package com.kopisenja.floodmonitoring.UnitTesting.WhiteBox;
 
 import com.kopisenja.floodmonitoring.R;
 import com.kopisenja.floodmonitoring.activity.IndexActivity;
