@@ -16,6 +16,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.Manifest;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +27,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -45,18 +50,19 @@ import com.kopisenja.floodmonitoring.adapter.HistoryAdapter;
 
 import java.util.ArrayList;
 
-public class IndexActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
+public class IndexActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
     private ArrayList<LatLng> mLocation = new ArrayList<LatLng>();
 
     public static final int REQUEST_ACCESS_LOCATION = 10;
-    private String mLatitude;
-    private String mLongitude;
+    private double mLatitude;
+    private double mLongitude;
 
-    private ConstraintLayout mTrueConstraintLayout, mLocationDeniedConstraintLayout, mInternetDeniedConstraintLayout;
+    private ConstraintLayout mTrueConstraintLayout, mLocationDeniedConstraintLayout, mInternetDeniedConstraintLayout, mGetLocationConstraintLayout;
     private Button mRetryLocationButton;
     private Button mRetryConnectionButton;
+    private Button mGetCurrentLoationButton;
     private BottomSheetDialog mBottomSheetDialog;
 
     // bottom sheet initialize
@@ -90,28 +96,33 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
         mTrueConstraintLayout = findViewById(R.id.constraint_index_location_true);
         mLocationDeniedConstraintLayout = findViewById(R.id.constraint_index_location_false);
         mInternetDeniedConstraintLayout = findViewById(R.id.recycleView_no_connection);
+        mGetLocationConstraintLayout = findViewById(R.id.constraint_get_location_false);
 
         mRetryLocationButton = findViewById(R.id.button_index_location_retry);
         mRetryConnectionButton = findViewById(R.id.button_retry_connection);
+        mGetCurrentLoationButton = findViewById(R.id.button_get_location_retry);
 
 
         if (isConnected() == true) {
             mTrueConstraintLayout.setVisibility(View.VISIBLE);
             mLocationDeniedConstraintLayout.setVisibility(View.GONE);
             mInternetDeniedConstraintLayout.setVisibility(View.GONE);
+            mGetLocationConstraintLayout.setVisibility(View.GONE);
 
             checkLocationPermission();
 //            initializeBottomSheet();
         } else {
             mTrueConstraintLayout.setVisibility(View.GONE);
             mLocationDeniedConstraintLayout.setVisibility(View.GONE);
+            mGetLocationConstraintLayout.setVisibility(View.GONE);
             mInternetDeniedConstraintLayout.setVisibility(View.VISIBLE);
         }
 
         reconnectingInternet();
         reconnectingLocation();
-
+        reconnectingGetCurrentLocation();
     }
+
 
     // check internet ---------------------------------------------------------------------------------------------------------------------
 
@@ -137,12 +148,14 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                     mTrueConstraintLayout.setVisibility(View.VISIBLE);
                     mLocationDeniedConstraintLayout.setVisibility(View.GONE);
                     mInternetDeniedConstraintLayout.setVisibility(View.GONE);
+                    mGetLocationConstraintLayout.setVisibility(View.GONE);
 
                     checkLocationPermission();
 //                    initializeBottomSheet();
                 } else {
                     mTrueConstraintLayout.setVisibility(View.GONE);
                     mLocationDeniedConstraintLayout.setVisibility(View.GONE);
+                    mGetLocationConstraintLayout.setVisibility(View.GONE);
                     mInternetDeniedConstraintLayout.setVisibility(View.VISIBLE);
                 }
             }
@@ -158,9 +171,9 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
             ActivityCompat.requestPermissions(IndexActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_LOCATION);
         }else{
             // akses sudah ada
-//            displayIndex(true);
-//            setLocation();
             changeDisplayAccessLocation(true);
+            geCurrentLocation();
+
         }
     }
 
@@ -169,10 +182,12 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
             mTrueConstraintLayout.setVisibility(View.VISIBLE);
             mLocationDeniedConstraintLayout.setVisibility(View.GONE);
             mInternetDeniedConstraintLayout.setVisibility(View.GONE);
+            mGetLocationConstraintLayout.setVisibility(View.GONE);
         } else {
             mTrueConstraintLayout.setVisibility(View.GONE);
             mLocationDeniedConstraintLayout.setVisibility(View.VISIBLE);
             mInternetDeniedConstraintLayout.setVisibility(View.GONE);
+            mGetLocationConstraintLayout.setVisibility(View.GONE);
         }
     }
 
@@ -193,35 +208,72 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // akses disetujui
                     changeDisplayAccessLocation(true);
-//                    setLocation();
+                    geCurrentLocation();
                 } else {
                     // akses ditolak
                     changeDisplayAccessLocation(false);
-//                    displayIndex(false);
                 }
                 break;
         }
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
+    private void geCurrentLocation() {
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationServices.getFusedLocationProviderClient(IndexActivity.this)
+                .requestLocationUpdates(locationRequest, new LocationCallback() {
+
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        super.onLocationResult(locationResult);
+                        LocationServices.getFusedLocationProviderClient(IndexActivity.this)
+                                .removeLocationUpdates(this);
+                        if (locationResult != null && locationResult.getLocations().size() > 0) {
+                            changeDisplayGetCurrentLocation(true);
+                            int latestLocationIndex = locationResult.getLocations().size() - 1;
+                            mLatitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
+                            mLongitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
+
+                            //mulai ngoding dari sini karena dari sini dapet current lokasi nta
+                            Log.d("TAG_LOCATION", String.valueOf(mLatitude) + "  " + mLongitude);
+                        } else {
+                            changeDisplayGetCurrentLocation(false);
+                        }
+                    }
+
+                }, Looper.getMainLooper());
+
 
     }
 
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
 
+    private void changeDisplayGetCurrentLocation(boolean status) {
+        if (status == true) {
+            mTrueConstraintLayout.setVisibility(View.VISIBLE);
+            mLocationDeniedConstraintLayout.setVisibility(View.GONE);
+            mInternetDeniedConstraintLayout.setVisibility(View.GONE);
+            mGetLocationConstraintLayout.setVisibility(View.GONE);
+        } else {
+            mTrueConstraintLayout.setVisibility(View.GONE);
+            mLocationDeniedConstraintLayout.setVisibility(View.GONE);
+            mInternetDeniedConstraintLayout.setVisibility(View.GONE);
+            mGetLocationConstraintLayout.setVisibility(View.VISIBLE);
+        }
     }
 
-    @Override
-    public void onProviderEnabled(String s) {
-
+    private void reconnectingGetCurrentLocation() {
+        mGetCurrentLoationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                geCurrentLocation();
+            }
+        });
     }
 
-    @Override
-    public void onProviderDisabled(String s) {
 
-    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
