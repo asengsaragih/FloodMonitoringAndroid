@@ -95,14 +95,12 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
         mRetryConnectionButton = findViewById(R.id.button_retry_connection);
 
 
-
-
         if (isConnected() == true) {
             mTrueConstraintLayout.setVisibility(View.VISIBLE);
             mLocationDeniedConstraintLayout.setVisibility(View.GONE);
             mInternetDeniedConstraintLayout.setVisibility(View.GONE);
-//
-//            checkLocationPermission();
+
+            checkLocationPermission();
 //            initializeBottomSheet();
         } else {
             mTrueConstraintLayout.setVisibility(View.GONE);
@@ -111,8 +109,11 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
         }
 
         reconnectingInternet();
+        reconnectingLocation();
 
     }
+
+    // check internet ---------------------------------------------------------------------------------------------------------------------
 
     private boolean isConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -137,7 +138,7 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                     mLocationDeniedConstraintLayout.setVisibility(View.GONE);
                     mInternetDeniedConstraintLayout.setVisibility(View.GONE);
 
-//                    checkLocationPermission();
+                    checkLocationPermission();
 //                    initializeBottomSheet();
                 } else {
                     mTrueConstraintLayout.setVisibility(View.GONE);
@@ -146,6 +147,60 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                 }
             }
         });
+    }
+
+    // check location -------------------------------------------------------------------------------------------------------------------------
+
+    private void checkLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // meminta akses lokasi, karena akses belum ada
+            changeDisplayAccessLocation(false);
+            ActivityCompat.requestPermissions(IndexActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_LOCATION);
+        }else{
+            // akses sudah ada
+//            displayIndex(true);
+//            setLocation();
+            changeDisplayAccessLocation(true);
+        }
+    }
+
+    private void changeDisplayAccessLocation(boolean status) {
+        if (status == true) {
+            mTrueConstraintLayout.setVisibility(View.VISIBLE);
+            mLocationDeniedConstraintLayout.setVisibility(View.GONE);
+            mInternetDeniedConstraintLayout.setVisibility(View.GONE);
+        } else {
+            mTrueConstraintLayout.setVisibility(View.GONE);
+            mLocationDeniedConstraintLayout.setVisibility(View.VISIBLE);
+            mInternetDeniedConstraintLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void reconnectingLocation() {
+        mRetryLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkLocationPermission();
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_ACCESS_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // akses disetujui
+                    changeDisplayAccessLocation(true);
+//                    setLocation();
+                } else {
+                    // akses ditolak
+                    changeDisplayAccessLocation(false);
+//                    displayIndex(false);
+                }
+                break;
+        }
     }
 
     @Override
@@ -472,34 +527,9 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
 //        });
 //    }
 
-//    private void checkLocationPermission() {
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // meminta akses lokasi, karena akses belum ada
-//            ActivityCompat.requestPermissions(IndexActivity.this,
-//                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_LOCATION);
-//        }else{
-//            // akses sudah ada
-//            displayIndex(true);
-//            setLocation();
-//        }
-//    }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        switch (requestCode) {
-//            case REQUEST_ACCESS_LOCATION:
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    // akses disetujui
-//                    displayIndex(true);
-//                    setLocation();
-//                } else {
-//                    // akses ditolak
-//                    displayIndex(false);
-//                }
-//                break;
-//        }
-//    }
+
+
 
 
 //    private void displayIndex(boolean isTrue) {
