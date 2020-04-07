@@ -15,6 +15,8 @@ import com.kopisenja.floodmonitoring.R;
 import com.kopisenja.floodmonitoring.base.Flood;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -57,6 +59,18 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         final Flood flood = mData.get(position);
 
         final int category = flood.getCategory();
+        final int status = flood.getStatus();
+
+        if (status == 0) {
+            holder.itemView.setVisibility(View.GONE);
+            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+        }
+//        ini else kalau erero tinggal dipanggil
+//        kodingan nya berfungsi untuk yang diatas jiks status 1
+//        else {
+//            holder.itemView.setVisibility(View.VISIBLE);
+//            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+//        }
 
         if (category == 1) {
             holder.categoryTextView.setText(mContext.getString(R.string.category_normal));
