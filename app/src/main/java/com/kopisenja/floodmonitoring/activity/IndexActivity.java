@@ -229,6 +229,10 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
     private void geCurrentLocation() {
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(3000);
@@ -245,8 +249,8 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                         if (locationResult != null && locationResult.getLocations().size() > 0) {
                             changeDisplayGetCurrentLocation(true);
                             int latestLocationIndex = locationResult.getLocations().size() - 1;
-                            mLatitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
-                            mLongitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
+                            mLatitude += locationResult.getLocations().get(latestLocationIndex).getLatitude();
+                            mLongitude += locationResult.getLocations().get(latestLocationIndex).getLongitude();
 
                             //mulai ngoding dari sini karena dari sini dapet current lokasi nta
                             Log.d("TAG_LOCATION", String.valueOf(mLatitude) + "  " + mLongitude);
@@ -333,8 +337,127 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        DatabaseReference reference;
+        reference = FirebaseDatabase.getInstance().getReference().child("Marker");
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                LatLng currentLocation = new LatLng(-6.9216083, 107.5801034);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 11f));
+
+                for (DataSnapshot value : dataSnapshot.getChildren()) {
+                    String key = value.getKey();
+                    String name = dataSnapshot.child(key).child("name").getValue(String.class);
+                    double longitude = dataSnapshot.child(key).child("longitude").getValue(Double.class);
+                    double latitude = dataSnapshot.child(key).child("latitude").getValue(Double.class);
+                    int status = dataSnapshot.child(key).child("status").getValue(Integer.class);
+                    LatLng databaseLocation = new LatLng(longitude, latitude);
+                    Log.d("TAG_FIREBASE", databaseLocation.toString());
+                    mMap.addMarker(new MarkerOptions().position(databaseLocation).title(name));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
+
+    private double calculateDistance(double dataLng, double dataLat) {
+
+        double theta = mLongitude - dataLng;
+        double dist = Math.sin(Math.toRadians(mLatitude)) * Math.sin(Math.toRadians(dataLat)) + Math.cos(Math.toRadians(mLatitude)) * Math.cos(Math.toRadians(dataLat)) * Math.cos(Math.toRadians(theta));
+
+        dist = Math.acos(dist);
+        dist = Math.toDegrees(dist);
+        dist = dist * 60 * 1.1515;
+        dist = dist * 1.609344;
+
+        return dist;
+    }
+
+
+//    @Override
+//    public void onMapReady(GoogleMap googleMap) {
+//        mMap = googleMap;
+//        DatabaseReference reference;
+//        reference = FirebaseDatabase.getInstance().getReference().child("Marker");
+//        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                int totalNode = (int) dataSnapshot.getChildrenCount();
+//
+//                LatLng currentLocation = new LatLng(Double.valueOf(mLongitude) , Double.valueOf(mLatitude));
+//
+//                LatLng latLng = null;
+//
+//                for (DataSnapshot value : dataSnapshot.getChildren()) {
+//                    String key = value.getKey();
+//                    String name = dataSnapshot.child(key).child("name").getValue(String.class);
+//                    double longitude = dataSnapshot.child(key).child("longitude").getValue(Double.class);
+//                    double latitude = dataSnapshot.child(key).child("latitude").getValue(Double.class);
+//                    int status = dataSnapshot.child(key).child("status").getValue(Integer.class);
+//                    latLng = new LatLng(longitude, latitude);
+//                }
+//
+//                Log.d("TAG", String.valueOf(latLng.latitude));
+//
+//    camera zoom
+//    1: World
+//5: Landmass/continent
+//10: City
+//15: Streets
+//20: Buildings
+////            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//        for (int i = 0; i < mLocation.size() ; i++) {
+//
+//            final int indexLocation = i;
+//            // location0 == 1
+//            // location1 == 2
+//
+//            if (indexLocation == 0) {
+//                mMap.addMarker(new MarkerOptions().position(mLocation.get(i)).title("Bojongsoang")).showInfoWindow();
+//            } else {
+//                mMap.addMarker(new MarkerOptions().position(mLocation.get(i)).title("Radio"));
+//            }
+//
+//            int calcutateDistance =  calculateDistance();
+//
+//            if (calcutateDistance == 1) {
+//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location1, 15f));
+//            } else {
+//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location2, 15f));
+//            }
+//        }
+//
+//        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+//            @Override
+//            public boolean onMarkerClick(Marker marker) {
+//                LatLng position = marker.getPosition();
+//
+//                if (position.latitude == location1.latitude && position.longitude == location1.longitude) {
+//                    getCurrentData(1);
+//                } else if (position.latitude == location2.latitude && position.longitude == location2.longitude) {
+//                    getCurrentData(2);
+//                }
+//
+//                return false;
+//            }
+//        });
+//    }
+
+
+
+
 
 
 //
@@ -551,90 +674,6 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
 //            getCurrentData(1);
 //        }
 //    }
-
-//    private double calculateDistance(double longitude, double latitude) {
-//        double currentLongitude = Double.parseDouble(mLongitude);
-//        double currentLatitude = Double.parseDouble(mLatitude);
-//
-//        double theta = currentLongitude - longitude;
-//        double dist = Math.sin(Math.toRadians(currentLatitude)) * Math.sin(Math.toRadians(latitude)) + Math.cos(Math.toRadians(currentLatitude)) * Math.cos(Math.toRadians(latitude)) * Math.cos(Math.toRadians(theta));
-//
-//        dist = Math.acos(dist);
-//        dist = Math.toDegrees(dist);
-//        dist = dist * 60 * 1.1515;
-//        dist = dist * 1.609344;
-//
-//        return dist;
-//    }
-
-//    @Override
-//    public void onMapReady(GoogleMap googleMap) {
-//        mMap = googleMap;
-//        DatabaseReference reference;
-//        reference = FirebaseDatabase.getInstance().getReference().child("Marker");
-//        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                int totalNode = (int) dataSnapshot.getChildrenCount();
-//
-//                LatLng currentLocation = new LatLng(Double.valueOf(mLongitude) , Double.valueOf(mLatitude));
-//
-//                LatLng latLng = null;
-//
-//                for (DataSnapshot value : dataSnapshot.getChildren()) {
-//                    String key = value.getKey();
-//                    String name = dataSnapshot.child(key).child("name").getValue(String.class);
-//                    double longitude = dataSnapshot.child(key).child("longitude").getValue(Double.class);
-//                    double latitude = dataSnapshot.child(key).child("latitude").getValue(Double.class);
-//                    int status = dataSnapshot.child(key).child("status").getValue(Integer.class);
-//                    latLng = new LatLng(longitude, latitude);
-//                }
-//
-//                Log.d("TAG", String.valueOf(latLng.latitude));
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//        for (int i = 0; i < mLocation.size() ; i++) {
-//
-//            final int indexLocation = i;
-//            // location0 == 1
-//            // location1 == 2
-//
-//            if (indexLocation == 0) {
-//                mMap.addMarker(new MarkerOptions().position(mLocation.get(i)).title("Bojongsoang")).showInfoWindow();
-//            } else {
-//                mMap.addMarker(new MarkerOptions().position(mLocation.get(i)).title("Radio"));
-//            }
-//
-//            int calcutateDistance =  calculateDistance();
-//
-//            if (calcutateDistance == 1) {
-//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location1, 15f));
-//            } else {
-//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location2, 15f));
-//            }
-//        }
-//
-//        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//            @Override
-//            public boolean onMarkerClick(Marker marker) {
-//                LatLng position = marker.getPosition();
-//
-//                if (position.latitude == location1.latitude && position.longitude == location1.longitude) {
-//                    getCurrentData(1);
-//                } else if (position.latitude == location2.latitude && position.longitude == location2.longitude) {
-//                    getCurrentData(2);
-//                }
-//
-//                return false;
-//            }
-//        });
-//    }
-
 
 
 
