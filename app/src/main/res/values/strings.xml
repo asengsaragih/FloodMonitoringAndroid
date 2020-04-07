@@ -38,4 +38,6 @@
     <string name="content_intro_two">Notifikasi akan diberikan ketika lokasi anda berada pada status bahaya</string>
     <string name="no_connection">Tidak ada internet</string>
     <string name="try_again">Coba Lagi</string>
+    <string name="gps_off">GPS Nonaktif</string>
+    <string name="turn_gps_on">Hidupkan GPS</string>
 </resources>
