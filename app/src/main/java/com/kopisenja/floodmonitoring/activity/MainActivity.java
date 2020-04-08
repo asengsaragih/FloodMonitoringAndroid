@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kopisenja.floodmonitoring.R;
 import com.kopisenja.floodmonitoring.base.Flood;
+import com.kopisenja.floodmonitoring.base.FloodData;
 import com.kopisenja.floodmonitoring.base.OtherMarker;
 
 import java.util.Calendar;
@@ -82,10 +83,16 @@ public class MainActivity extends AppCompatActivity {
 //                        ToastMessage(MainActivity.this, "Gagal", 1);
 //                    }
 //                });
-                mDatabaseReferences = FirebaseDatabase.getInstance().getReference("Marker");
+                mDatabaseReferences = FirebaseDatabase.getInstance().getReference("Marker").child("-M3hNU9HV4ZkuWsSgxcc").child("recent");
                 String keyID = mDatabaseReferences.push().getKey();
-                mDatabaseReferences.child(keyID).setValue(new OtherMarker(
-                        "Bojongsoang"
+                mDatabaseReferences.child(keyID).setValue(new FloodData(
+                        getCurrentDate(),
+                        getCurrentTime(),
+                        "31 L/m",
+                        "1.5 cm",
+                        1,
+                        1,
+                        "-" + System.currentTimeMillis()
                 )).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

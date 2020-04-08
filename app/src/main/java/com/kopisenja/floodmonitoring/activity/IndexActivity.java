@@ -1,6 +1,7 @@
 package com.kopisenja.floodmonitoring.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -41,6 +42,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -49,8 +51,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.kopisenja.floodmonitoring.R;
 import com.kopisenja.floodmonitoring.adapter.HistoryAdapter;
+import com.kopisenja.floodmonitoring.base.FloodData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import static com.kopisenja.floodmonitoring.base.FunctionClass.ToastMessage;
 
 public class IndexActivity extends AppCompatActivity implements OnMapReadyCallback{
 
@@ -251,6 +257,7 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                             int latestLocationIndex = locationResult.getLocations().size() - 1;
                             mLatitude += locationResult.getLocations().get(latestLocationIndex).getLatitude();
                             mLongitude += locationResult.getLocations().get(latestLocationIndex).getLongitude();
+                            initializeBottomSheet();
 
                             //mulai ngoding dari sini karena dari sini dapet current lokasi nta
                             Log.d("TAG_LOCATION", String.valueOf(mLatitude) + "  " + mLongitude);
@@ -343,40 +350,95 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                final HashMap<LatLng, String> mapp = new HashMap<LatLng, String>();
 
-                LatLng currentLocation = new LatLng(-6.9216083, 107.5801034);
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 11f));
+                for (final DataSnapshot value : dataSnapshot.getChildren()) {
+                    final String key = value.getKey();
 
-                for (DataSnapshot value : dataSnapshot.getChildren()) {
-                    String key = value.getKey();
                     String name = dataSnapshot.child(key).child("name").getValue(String.class);
                     double longitude = dataSnapshot.child(key).child("longitude").getValue(Double.class);
                     double latitude = dataSnapshot.child(key).child("latitude").getValue(Double.class);
                     int status = dataSnapshot.child(key).child("status").getValue(Integer.class);
                     LatLng databaseLocation = new LatLng(longitude, latitude);
-                    Log.d("TAG_FIREBASE", databaseLocation.toString());
+
+                    mapp.put(databaseLocation, key);
+
                     mMap.addMarker(new MarkerOptions().position(databaseLocation).title(name));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(databaseLocation, 13f));
                 }
+
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        onMarkerMapsClicked(mapp.get(marker.getPosition()));
+                        return false;
+                    }
+                });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
             }
         });
     }
 
-    private double calculateDistance(double dataLng, double dataLat) {
+//  Botton Sheet Dialog-----------------------------------------------------------------------------------------------------------------------------------------
+    
+    private void initializeBottomSheet() {
+        mBottomSheetDialog = new BottomSheetDialog(this, R.style.TransparentDialog);
+        mBottomSheetDialog.setContentView(R.layout.bottomsheet_dialog_index);
+        mBottomSheetDialog.setCanceledOnTouchOutside(true);
 
-        double theta = mLongitude - dataLng;
-        double dist = Math.sin(Math.toRadians(mLatitude)) * Math.sin(Math.toRadians(dataLat)) + Math.cos(Math.toRadians(mLatitude)) * Math.cos(Math.toRadians(dataLat)) * Math.cos(Math.toRadians(theta));
+        mCategoryTextview = mBottomSheetDialog.findViewById(R.id.bottom_sheet_category_textview);
+        mLocationTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_location);
+        mDateTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_date);
+        mTimeTextview = mBottomSheetDialog.findViewById(R.id.bottom_sheet_time_textview);
+        mDetailTextview = mBottomSheetDialog.findViewById(R.id.bottom_sheet_detail_textview);
+        mOtherTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_other);
+        mLevelTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_level);
+        mFlowTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_flow);
+        mCategoryMessageTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_category);
 
-        dist = Math.acos(dist);
-        dist = Math.toDegrees(dist);
-        dist = dist * 60 * 1.1515;
-        dist = dist * 1.609344;
+        mDateTimeLinear = mBottomSheetDialog.findViewById(R.id.linear_dateTime);
+        mDetailLinear = mBottomSheetDialog.findViewById(R.id.linear_detail);
+        mCategoryLinear = mBottomSheetDialog.findViewById(R.id.linear_category);
 
-        return dist;
+        mDateTimeConstraint = mBottomSheetDialog.findViewById(R.id.bottom_sheet_dateTime);
+        mDetailConstraint = mBottomSheetDialog.findViewById(R.id.bottom_sheet_detail);
+        mCategoryConstraint = mBottomSheetDialog.findViewById(R.id.bottom_sheet_category);
+
+        mDateImageView = mBottomSheetDialog.findViewById(R.id.bottom_sheet_location_textview);
+        mDetailImageView = mBottomSheetDialog.findViewById(R.id.bottom_sheet_imageview_detail);
+        mCategoryImageView = mBottomSheetDialog.findViewById(R.id.bottom_sheet_imageview_category);
+    }
+
+    private void onMarkerMapsClicked(final String idDevice) {
+        ToastMessage(this, idDevice, 1);
+//        DatabaseReference reference;
+//        reference = FirebaseDatabase.getInstance().getReference().child("Current");
+//        Log.d("DEBIT", "DARI ATAS " + idDevice);
+//        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot value : dataSnapshot.getChildren()) {
+//                    String key = value.getKey();
+//                    String id = dataSnapshot.child(key).child("id_marker").getValue(String.class);
+//
+//
+//
+//                    if (id.contains(idDevice)) {
+//                        String debit = dataSnapshot.child(key).child("debit").getValue(String.class);
+//
+//                        Log.d("DEBIT", "ID BIASA " + id);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
 
@@ -473,33 +535,7 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
 //        startActivity(intent);
 //    }
 //
-//    private void initializeBottomSheet() {
-//        mBottomSheetDialog = new BottomSheetDialog(this, R.style.TransparentDialog);
-//        mBottomSheetDialog.setContentView(R.layout.bottomsheet_dialog_index);
-//        mBottomSheetDialog.setCanceledOnTouchOutside(true);
-//
-//        mCategoryTextview = mBottomSheetDialog.findViewById(R.id.bottom_sheet_category_textview);
-//        mLocationTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_location);
-//        mDateTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_date);
-//        mTimeTextview = mBottomSheetDialog.findViewById(R.id.bottom_sheet_time_textview);
-//        mDetailTextview = mBottomSheetDialog.findViewById(R.id.bottom_sheet_detail_textview);
-//        mOtherTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_other);
-//        mLevelTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_level);
-//        mFlowTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_flow);
-//        mCategoryMessageTextview = mBottomSheetDialog.findViewById(R.id.textView_bottom_sheet_category);
-//
-//        mDateTimeLinear = mBottomSheetDialog.findViewById(R.id.linear_dateTime);
-//        mDetailLinear = mBottomSheetDialog.findViewById(R.id.linear_detail);
-//        mCategoryLinear = mBottomSheetDialog.findViewById(R.id.linear_category);
-//
-//        mDateTimeConstraint = mBottomSheetDialog.findViewById(R.id.bottom_sheet_dateTime);
-//        mDetailConstraint = mBottomSheetDialog.findViewById(R.id.bottom_sheet_detail);
-//        mCategoryConstraint = mBottomSheetDialog.findViewById(R.id.bottom_sheet_category);
-//
-//        mDateImageView = mBottomSheetDialog.findViewById(R.id.bottom_sheet_location_textview);
-//        mDetailImageView = mBottomSheetDialog.findViewById(R.id.bottom_sheet_imageview_detail);
-//        mCategoryImageView = mBottomSheetDialog.findViewById(R.id.bottom_sheet_imageview_category);
-//    }
+
 //
 //    private void setLocation() {
 //        mLocation.add(location1);
