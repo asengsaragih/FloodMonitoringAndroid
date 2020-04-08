@@ -414,6 +414,7 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
     private void onMarkerMapsClicked(final String keyMarker, final String titleMaps) {
         final Intent i = new Intent(getApplicationContext(), HistoryActivity.class);
         i.putExtra("CODE_LOCATION", keyMarker);
+        i.putExtra("NAME_LOCATION", titleMaps);
 
         mOtherTextview.setOnClickListener(new View.OnClickListener() {
             @Override

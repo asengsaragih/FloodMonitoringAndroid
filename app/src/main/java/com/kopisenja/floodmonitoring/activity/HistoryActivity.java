@@ -3,17 +3,14 @@ package com.kopisenja.floodmonitoring.activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -21,10 +18,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.Query;
 import com.kopisenja.floodmonitoring.R;
 import com.kopisenja.floodmonitoring.adapter.HistoryAdapter;
-import com.kopisenja.floodmonitoring.base.Flood;
 import com.kopisenja.floodmonitoring.base.FloodData;
 
 import java.util.ArrayList;
@@ -96,13 +92,13 @@ public class HistoryActivity extends AppCompatActivity {
         });
 
         showHistory(savedInstanceState);
-        showTitleBar();
+        showTitleBar(savedInstanceState);
     }
 
-    private void showTitleBar() {
+    private void showTitleBar(Bundle savedInstanceState) {
         mTitleTextView = findViewById(R.id.textView_title_history);
 
-        String text = "<font color='#828282'>Status Banjir</font><br><font color='#93CFF2'>Terkini</font>";
+        String text = "<font color='#828282'>Status Terkini</font><br><font color='#93CFF2'>" + nameLocation(savedInstanceState) + "</font>";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             mTitleTextView.setText(Html.fromHtml(text,  Html.FROM_HTML_MODE_LEGACY), TextView.BufferType.SPANNABLE);
@@ -127,6 +123,22 @@ public class HistoryActivity extends AppCompatActivity {
         }
     }
 
+    private String nameLocation(Bundle savedInstanceState) {
+        String name_location;
+
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras == null) {
+                return name_location = null;
+
+            } else {
+                return name_location = extras.getString("NAME_LOCATION");
+            }
+        } else {
+            return name_location = (String) savedInstanceState.getSerializable("NAME_LOCATION");
+        }
+    }
+
     private void showHistory(Bundle savedInstanceState) {
         String key = idLocation(savedInstanceState);
 
@@ -135,7 +147,9 @@ public class HistoryActivity extends AppCompatActivity {
 
         mDatabase = FirebaseDatabase.getInstance().getReference("Marker").child(key).child("recent");
 
-        mDatabase.addChildEventListener(childEventListener);
+        Query queryLimit = mDatabase.orderByChild("status").equalTo(1).limitToLast(20);
+
+        queryLimit.addChildEventListener(childEventListener);
 
         mHistoryRecycleView.setHasFixedSize(true);
 

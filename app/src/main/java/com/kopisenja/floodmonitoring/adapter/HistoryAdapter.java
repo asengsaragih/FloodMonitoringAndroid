@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kopisenja.floodmonitoring.R;
-import com.kopisenja.floodmonitoring.base.Flood;
 import com.kopisenja.floodmonitoring.base.FloodData;
 
 import java.util.ArrayList;
@@ -60,12 +59,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         final FloodData floodData = mData.get(position);
 
         final int category = floodData.getCategory();
-        final int status = floodData.getStatus();
+//
 
-        if (status == 0) {
-            holder.itemView.setVisibility(View.GONE);
-            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
-        }
 //        ini else kalau erero tinggal dipanggil
 //        kodingan nya berfungsi untuk yang diatas jiks status 1
 //        else {
@@ -84,7 +79,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             holder.categoryTextView.setTextColor(mContext.getResources().getColor(R.color.colorTextCategoryDanger));
         }
 
-        holder.locationTextView.setText("Lokasi Belum");
         holder.dateTextView.setText(floodData.getDate() + " " + floodData.getTime());
         holder.detailTextView.setText(floodData.getLevel() + " " + floodData.getDebit());
 
@@ -95,7 +89,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 View detailView = View.inflate(mContext, R.layout.custom_dialog_history, null);
 
                 TextView statusTextview = detailView.findViewById(R.id.textView_dialog_history_status);
-                TextView lokasiTextview = detailView.findViewById(R.id.textView_dialog_history_lokasi);
                 TextView tanggalTextview = detailView.findViewById(R.id.textView_dialog_history_tanggal);
                 TextView waktuTextview = detailView.findViewById(R.id.textView_dialog_history_waktu);
                 TextView tinggiTextview = detailView.findViewById(R.id.textView_dialog_history_tinggi);
@@ -117,8 +110,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                     statusTextview.setText(Html.fromHtml(text), TextView.BufferType.SPANNABLE);
                 }
 
-
-                lokasiTextview.setText("Lokasi \t\t\t\t: " + "Belum Diambil");
                 tanggalTextview.setText("Tanggal \t\t\t: " + floodData.getDate());
                 waktuTextview.setText("Waktu \t\t\t\t: " + floodData.getTime());
                 tinggiTextview.setText("Tinggi \t\t\t\t\t: " + floodData.getLevel());
@@ -164,7 +155,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         final TextView categoryTextView;
-        final TextView locationTextView;
         final TextView dateTextView;
         final TextView detailTextView;
         final ConstraintLayout boxConstraint;
@@ -173,7 +163,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             super(itemView);
 
             categoryTextView = itemView.findViewById(R.id.textView_history_category);
-            locationTextView = itemView.findViewById(R.id.textView_history_location);
             dateTextView = itemView.findViewById(R.id.textView_history_date);
             detailTextView = itemView.findViewById(R.id.textView_history_detail);
             boxConstraint = itemView.findViewById(R.id.constraint_list_item_history);
