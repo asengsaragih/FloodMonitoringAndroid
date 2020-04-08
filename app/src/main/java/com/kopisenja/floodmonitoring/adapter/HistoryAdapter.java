@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.kopisenja.floodmonitoring.R;
 import com.kopisenja.floodmonitoring.base.Flood;
+import com.kopisenja.floodmonitoring.base.FloodData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +27,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     private ClickHandler mClickHandler;
     private Context mContext;
-    private ArrayList<Flood> mData;
+    private ArrayList<FloodData> mData;
     private ArrayList<String> mDataId;
     private ArrayList<String> mSelectedId;
     private View mEmptyView;
 
-    public HistoryAdapter(Context context, ArrayList<Flood> data, ArrayList<String> dataId, View emptyView, ClickHandler handler) {
+    public HistoryAdapter(Context context, ArrayList<FloodData> data, ArrayList<String> dataId, View emptyView, ClickHandler handler) {
         mContext = context;
         mData = data;
         mDataId = dataId;
@@ -56,10 +57,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        final Flood flood = mData.get(position);
+        final FloodData floodData = mData.get(position);
 
-        final int category = flood.getCategory();
-        final int status = flood.getStatus();
+        final int category = floodData.getCategory();
+        final int status = floodData.getStatus();
 
         if (status == 0) {
             holder.itemView.setVisibility(View.GONE);
@@ -83,9 +84,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             holder.categoryTextView.setTextColor(mContext.getResources().getColor(R.color.colorTextCategoryDanger));
         }
 
-        holder.locationTextView.setText(flood.getLocation());
-        holder.dateTextView.setText(flood.getDate() + " " + flood.getTime());
-        holder.detailTextView.setText(flood.getLevel() + " " + flood.getDebit());
+        holder.locationTextView.setText("Lokasi Belum");
+        holder.dateTextView.setText(floodData.getDate() + " " + floodData.getTime());
+        holder.detailTextView.setText(floodData.getLevel() + " " + floodData.getDebit());
 
         holder.boxConstraint.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,12 +118,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 }
 
 
-                lokasiTextview.setText("Lokasi \t\t\t\t: " + flood.getLocation());
-                tanggalTextview.setText("Tanggal \t\t\t: " + flood.getDate());
-                waktuTextview.setText("Waktu \t\t\t\t: " + flood.getTime());
-                tinggiTextview.setText("Tinggi \t\t\t\t\t: " + flood.getLevel());
+                lokasiTextview.setText("Lokasi \t\t\t\t: " + "Belum Diambil");
+                tanggalTextview.setText("Tanggal \t\t\t: " + floodData.getDate());
+                waktuTextview.setText("Waktu \t\t\t\t: " + floodData.getTime());
+                tinggiTextview.setText("Tinggi \t\t\t\t\t: " + floodData.getLevel());
 
-                String[] debit = flood.getDebit().split(" ");
+                String[] debit = floodData.getDebit().split(" ");
                 debitTextview.setText("Debit \t\t\t\t\t: " + debit[0] + " Liter/menit");
 
 

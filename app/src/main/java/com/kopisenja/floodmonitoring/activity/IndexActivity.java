@@ -412,6 +412,16 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
     private void onMarkerMapsClicked(final String keyMarker, final String titleMaps) {
+        final Intent i = new Intent(getApplicationContext(), HistoryActivity.class);
+        i.putExtra("CODE_LOCATION", keyMarker);
+
+        mOtherTextview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(i);
+            }
+        });
+
         DatabaseReference reference;
         reference = FirebaseDatabase.getInstance().getReference("Marker").child(keyMarker).child("recent");
         Query query = reference.orderByChild("status").equalTo(1).limitToLast(1);
