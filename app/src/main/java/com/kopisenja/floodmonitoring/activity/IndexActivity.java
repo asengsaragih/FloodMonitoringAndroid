@@ -354,23 +354,22 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
 
                 for (final DataSnapshot value : dataSnapshot.getChildren()) {
                     final String key = value.getKey();
-
                     String name = dataSnapshot.child(key).child("name").getValue(String.class);
                     double longitude = dataSnapshot.child(key).child("longitude").getValue(Double.class);
                     double latitude = dataSnapshot.child(key).child("latitude").getValue(Double.class);
                     int status = dataSnapshot.child(key).child("status").getValue(Integer.class);
-                    LatLng databaseLocation = new LatLng(longitude, latitude);
-
-                    mapp.put(databaseLocation, key);
-
-                    mMap.addMarker(new MarkerOptions().position(databaseLocation).title(name));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(databaseLocation, 13f));
+                    if (status == 1) {
+                        LatLng databaseLocation = new LatLng(longitude, latitude);
+                        mapp.put(databaseLocation, key);
+                        mMap.addMarker(new MarkerOptions().position(databaseLocation).title(name));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(databaseLocation, 13f));
+                    }
                 }
 
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        onMarkerMapsClicked(mapp.get(marker.getPosition()));
+                        onMarkerMapsClicked(mapp.get(marker.getPosition()), marker.getTitle());
                         return false;
                     }
                 });
@@ -412,117 +411,116 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
         mCategoryImageView = mBottomSheetDialog.findViewById(R.id.bottom_sheet_imageview_category);
     }
 
-    private void onMarkerMapsClicked(final String idDevice) {
-        ToastMessage(this, idDevice, 1);
-//        DatabaseReference reference;
-//        reference = FirebaseDatabase.getInstance().getReference().child("Current");
-//        Log.d("DEBIT", "DARI ATAS " + idDevice);
-//        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot value : dataSnapshot.getChildren()) {
-//                    String key = value.getKey();
-//                    String id = dataSnapshot.child(key).child("id_marker").getValue(String.class);
-//
-//
-//
-//                    if (id.contains(idDevice)) {
-//                        String debit = dataSnapshot.child(key).child("debit").getValue(String.class);
-//
-//                        Log.d("DEBIT", "ID BIASA " + id);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
+    private void onMarkerMapsClicked(final String keyMarker, final String titleMaps) {
+        DatabaseReference reference;
+        reference = FirebaseDatabase.getInstance().getReference("Marker").child(keyMarker).child("recent");
+        Query query = reference.orderByChild("status").equalTo(1).limitToLast(1);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot value : dataSnapshot.getChildren()) {
+                    String key = value.getKey();
+
+                    String date = dataSnapshot.child(key).child("date").getValue(String.class);
+                    String time = dataSnapshot.child(key).child("time").getValue(String.class);
+                    String debit = dataSnapshot.child(key).child("debit").getValue(String.class);
+                    String level = dataSnapshot.child(key).child("level").getValue(String.class);
+                    Integer category = dataSnapshot.child(key).child("category").getValue(Integer.class);
+
+                    mTimeTextview.setText(time + " WIB");
+                    mDetailTextview.setText(level + " " + debit);
+
+                    if (category == 1) {
+                        mCategoryTextview.setText(getString(R.string.category_normal));
+                        mCategoryMessageTextview.setText(getString(R.string.bottom_sheet_text_first) + " " + getString(R.string.category_normal) + "\n" + getString(R.string.bottom_sheet_text_last_normal));
+                    } else if (category == 2) {
+                        mCategoryTextview.setText(getString(R.string.category_standby));
+                        mCategoryMessageTextview.setText(getString(R.string.bottom_sheet_text_first) + " " + getString(R.string.category_standby) + "\n" + getString(R.string.bottom_sheet_text_last_standby));
+                    } else {
+                        mCategoryTextview.setText(getString(R.string.category_danger));
+                        mCategoryMessageTextview.setText(getString(R.string.bottom_sheet_text_first) + " " + getString(R.string.category_danger) + "\n" + getString(R.string.bottom_sheet_text_last_danger));
+                    }
+
+                    mLocationTextview.setText(titleMaps);
+                    mDateTextview.setText(date);
+
+                    mLevelTextview.setText("Tinggi Air : " + level);
+                    mFlowTextview.setText("Debit Air : " + debit);
+
+                    mDateTimeConstraint.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mDateTimeLinear.setVisibility(View.VISIBLE);
+                            mDetailLinear.setVisibility(View.GONE);
+                            mCategoryLinear.setVisibility(View.GONE);
+
+                            mDateImageView.setImageResource(R.drawable.ic_time_24dp);
+                            mDetailImageView.setImageResource(R.drawable.ic_water_dark_24dp);
+                            mCategoryImageView.setImageResource(R.drawable.ic_warning_dark_24dp);
+
+                            mDateTimeConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteBlue));
+                            mDetailConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteGray));
+                            mCategoryConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteGray));
+
+                            mTimeTextview.setTextColor(getResources().getColor(R.color.colorTextWhite));
+                            mDetailTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
+                            mCategoryTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
+                        }
+                    });
+
+                    mDetailConstraint.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mDateTimeLinear.setVisibility(View.GONE);
+                            mDetailLinear.setVisibility(View.VISIBLE);
+                            mCategoryLinear.setVisibility(View.GONE);
+
+                            mDateImageView.setImageResource(R.drawable.ic_time_dark_24dp);
+                            mDetailImageView.setImageResource(R.drawable.ic_water_24dp);
+                            mCategoryImageView.setImageResource(R.drawable.ic_warning_dark_24dp);
+
+                            mDateTimeConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteGray));
+                            mDetailConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteBlue));
+                            mCategoryConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteGray));
+
+                            mTimeTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
+                            mDetailTextview.setTextColor(getResources().getColor(R.color.colorTextWhite));
+                            mCategoryTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
+                        }
+                    });
+
+                    mCategoryConstraint.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mDateTimeLinear.setVisibility(View.GONE);
+                            mDetailLinear.setVisibility(View.GONE);
+                            mCategoryLinear.setVisibility(View.VISIBLE);
+
+                            mDateImageView.setImageResource(R.drawable.ic_time_dark_24dp);
+                            mDetailImageView.setImageResource(R.drawable.ic_water_dark_24dp);
+                            mCategoryImageView.setImageResource(R.drawable.ic_warning_24dp);
+
+                            mDateTimeConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteGray));
+                            mDetailConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteGray));
+                            mCategoryConstraint.setBackgroundColor(getResources().getColor(R.color.colorPaletteBlue));
+
+                            mTimeTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
+                            mDetailTextview.setTextColor(getResources().getColor(R.color.colorTextDark));
+                            mCategoryTextview.setTextColor(getResources().getColor(R.color.colorTextWhite));
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        mBottomSheetDialog.show();
     }
 
-
-//    @Override
-//    public void onMapReady(GoogleMap googleMap) {
-//        mMap = googleMap;
-//        DatabaseReference reference;
-//        reference = FirebaseDatabase.getInstance().getReference().child("Marker");
-//        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                int totalNode = (int) dataSnapshot.getChildrenCount();
-//
-//                LatLng currentLocation = new LatLng(Double.valueOf(mLongitude) , Double.valueOf(mLatitude));
-//
-//                LatLng latLng = null;
-//
-//                for (DataSnapshot value : dataSnapshot.getChildren()) {
-//                    String key = value.getKey();
-//                    String name = dataSnapshot.child(key).child("name").getValue(String.class);
-//                    double longitude = dataSnapshot.child(key).child("longitude").getValue(Double.class);
-//                    double latitude = dataSnapshot.child(key).child("latitude").getValue(Double.class);
-//                    int status = dataSnapshot.child(key).child("status").getValue(Integer.class);
-//                    latLng = new LatLng(longitude, latitude);
-//                }
-//
-//                Log.d("TAG", String.valueOf(latLng.latitude));
-//
-//    camera zoom
-//    1: World
-//5: Landmass/continent
-//10: City
-//15: Streets
-//20: Buildings
-////            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//        for (int i = 0; i < mLocation.size() ; i++) {
-//
-//            final int indexLocation = i;
-//            // location0 == 1
-//            // location1 == 2
-//
-//            if (indexLocation == 0) {
-//                mMap.addMarker(new MarkerOptions().position(mLocation.get(i)).title("Bojongsoang")).showInfoWindow();
-//            } else {
-//                mMap.addMarker(new MarkerOptions().position(mLocation.get(i)).title("Radio"));
-//            }
-//
-//            int calcutateDistance =  calculateDistance();
-//
-//            if (calcutateDistance == 1) {
-//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location1, 15f));
-//            } else {
-//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location2, 15f));
-//            }
-//        }
-//
-//        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-//            @Override
-//            public boolean onMarkerClick(Marker marker) {
-//                LatLng position = marker.getPosition();
-//
-//                if (position.latitude == location1.latitude && position.longitude == location1.longitude) {
-//                    getCurrentData(1);
-//                } else if (position.latitude == location2.latitude && position.longitude == location2.longitude) {
-//                    getCurrentData(2);
-//                }
-//
-//                return false;
-//            }
-//        });
-//    }
-
-
-
-
-
-
-//
 //    private void intentToHistory(int location) {
 //        Intent intent = new Intent(getApplicationContext(), HistoryActivity.class);
 //
