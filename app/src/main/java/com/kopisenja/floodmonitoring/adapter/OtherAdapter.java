@@ -50,21 +50,19 @@ public class OtherAdapter extends RecyclerView.Adapter<OtherAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final OtherMarker otherMarker = mData.get(position);
-        holder.titleTextView.setText(otherMarker.getLocation());
+
+        holder.titleTextView.setText(otherMarker.getName());
+
         holder.boxConstraint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, HistoryActivity.class);
+                intent.putExtra("CODE_LOCATION", mDataId.get(position));
+                intent.putExtra("NAME_LOCATION", otherMarker.getName());
 
-                if (otherMarker.getLocation().equals("Bojongsoang")) {
-                    intent.putExtra("CODE_LOCATION", "1");
-                    mContext.startActivity(intent);
-                } else if (otherMarker.getLocation().equals("Radio")) {
-                    intent.putExtra("CODE_LOCATION", "2");
-                    mContext.startActivity(intent);
-                }
+                mContext.startActivity(intent);
             }
         });
 

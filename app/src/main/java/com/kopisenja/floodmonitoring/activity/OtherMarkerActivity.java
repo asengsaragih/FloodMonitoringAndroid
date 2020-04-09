@@ -20,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.kopisenja.floodmonitoring.R;
 import com.kopisenja.floodmonitoring.adapter.OtherAdapter;
 import com.kopisenja.floodmonitoring.base.OtherMarker;
@@ -86,10 +87,7 @@ public class OtherMarkerActivity extends AppCompatActivity {
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), IndexActivity.class);
-//                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(i);
-//                finish();
+                finish();
             }
         });
 
@@ -104,13 +102,12 @@ public class OtherMarkerActivity extends AppCompatActivity {
 
         mOtherRecycleView = findViewById(R.id.recycleView_other);
         mDatabase = FirebaseDatabase.getInstance().getReference().child("Marker");
-        mDatabase.addChildEventListener(childEventListener);
+        Query orderQuery = mDatabase.orderByChild("status").equalTo(1);
+        orderQuery.addChildEventListener(childEventListener);
 
         mOtherRecycleView.setHasFixedSize(true);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        linearLayoutManager.setReverseLayout(true);
-        linearLayoutManager.setStackFromEnd(true);
         mOtherRecycleView.setLayoutManager(linearLayoutManager);
 
         mAdapter = new OtherAdapter(this, mData, mDataId, mEmptyView, new OtherAdapter.ClickHandler() {
