@@ -359,7 +359,7 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                     double latitude = dataSnapshot.child(key).child("latitude").getValue(Double.class);
                     int status = dataSnapshot.child(key).child("status").getValue(Integer.class);
                     if (status == 1) {
-                        LatLng databaseLocation = new LatLng(longitude, latitude);
+                        LatLng databaseLocation = new LatLng(latitude, longitude);
                         mapp.put(databaseLocation, key);
                         mMap.addMarker(new MarkerOptions().position(databaseLocation).title(name));
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(databaseLocation, 13f));
