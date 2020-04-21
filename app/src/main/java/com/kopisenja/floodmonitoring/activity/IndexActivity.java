@@ -55,17 +55,17 @@ import com.kopisenja.floodmonitoring.base.FloodData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.kopisenja.floodmonitoring.base.FunctionClass.ToastMessage;
 
 public class IndexActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap mMap;
-    private ArrayList<LatLng> mLocation = new ArrayList<LatLng>();
 
     public static final int REQUEST_ACCESS_LOCATION = 10;
-    private double mLatitude;
-    private double mLongitude;
+    public double mLatitude;
+    public double mLongitude;
 
     private ConstraintLayout mTrueConstraintLayout, mLocationDeniedConstraintLayout, mInternetDeniedConstraintLayout, mGetLocationConstraintLayout, mGpsFalseConstrainLayout;
     private Button mRetryLocationButton;
@@ -255,8 +255,9 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                         if (locationResult != null && locationResult.getLocations().size() > 0) {
                             changeDisplayGetCurrentLocation(true);
                             int latestLocationIndex = locationResult.getLocations().size() - 1;
-                            mLatitude += locationResult.getLocations().get(latestLocationIndex).getLatitude();
-                            mLongitude += locationResult.getLocations().get(latestLocationIndex).getLongitude();
+
+                            mLatitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
+                            mLongitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
                             initializeBottomSheet();
 
                             //mulai ngoding dari sini karena dari sini dapet current lokasi nta
@@ -267,8 +268,36 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                     }
 
                 }, Looper.getMainLooper());
+    }
 
+    private String mLocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+        Location locationGps = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location locationNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Location locationPassive = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+
+        if (locationGps != null) {
+            double lat = locationGps.getLatitude();
+            double longi = locationGps.getLongitude();
+
+            return String.valueOf(lat) + "," + String.valueOf(longi);
+
+        } else if (locationNetwork != null) {
+            double lat = locationNetwork.getLatitude();
+            double longi = locationNetwork.getLongitude();
+
+            return String.valueOf(lat) + "," + String.valueOf(longi);
+
+        } else if (locationPassive != null) {
+            double lat = locationPassive.getLatitude();
+            double longi = locationPassive.getLongitude();
+
+            return String.valueOf(lat) + "," + String.valueOf(longi);
+
+        } else {
+            return "";
+        }
     }
 
 
@@ -351,6 +380,7 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 final HashMap<LatLng, String> mapp = new HashMap<LatLng, String>();
+                HashMap<LatLng, Double> distance = new HashMap<LatLng, Double>();
 
                 for (final DataSnapshot value : dataSnapshot.getChildren()) {
                     final String key = value.getKey();
@@ -362,9 +392,20 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                         LatLng databaseLocation = new LatLng(latitude, longitude);
                         mapp.put(databaseLocation, key);
                         mMap.addMarker(new MarkerOptions().position(databaseLocation).title(name));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(databaseLocation, 13f));
+
+                        distance.put(databaseLocation, calculateDistance(databaseLocation));
                     }
                 }
+
+                Map.Entry<LatLng, Double> minDistance = null;
+
+                for (Map.Entry<LatLng, Double> entry : distance.entrySet()) {
+                    if (minDistance == null || minDistance.getValue() > entry.getValue()) {
+                        minDistance = entry;
+                    }
+                }
+
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(minDistance.getKey(), 15f));
 
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
@@ -377,9 +418,43 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
+
+    private double calculateDistance(LatLng latLng) {
+        String locationRaw;
+        String currentLocation = mLocation();
+        String backupLocation = "-6.922108,107.606670";
+
+        if (currentLocation == "") {
+            locationRaw = backupLocation;
+        } else {
+            locationRaw = currentLocation;
+        }
+
+        String[] splitRaw = locationRaw.split(",");
+
+        Double lat1 = Double.parseDouble(splitRaw[0]);
+        Double long1 = Double.parseDouble(splitRaw[1]);
+
+        Double lat2 = latLng.latitude;
+        Double long2 = latLng.longitude;
+
+        double theta = long1 - long2;
+        double dist =
+                Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2))
+                        + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
+
+        dist = Math.acos(dist);
+        dist = Math.toDegrees(dist);
+        dist = dist * 60 * 1.1515;
+        dist = dist * 1.609344;
+
+        return dist;
+    }
+
 
 //  Botton Sheet Dialog-----------------------------------------------------------------------------------------------------------------------------------------
     
