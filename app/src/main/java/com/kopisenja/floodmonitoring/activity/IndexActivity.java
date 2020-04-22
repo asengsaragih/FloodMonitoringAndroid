@@ -351,6 +351,10 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
             mInternetDeniedConstraintLayout.setVisibility(View.GONE);
             mGetLocationConstraintLayout.setVisibility(View.GONE);
             mGpsFalseConstrainLayout.setVisibility(View.GONE);
+
+            //fixing issue bug gps. but not effective
+
+            geCurrentLocation();
         }
     }
 
