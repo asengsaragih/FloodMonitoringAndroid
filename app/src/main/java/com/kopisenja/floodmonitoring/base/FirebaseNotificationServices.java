@@ -13,7 +13,7 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.kopisenja.floodmonitoring.R;
-import com.kopisenja.floodmonitoring.activity.IndexActivity;
+import com.kopisenja.floodmonitoring.activity.OtherMarkerActivity;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -21,28 +21,34 @@ import androidx.core.app.NotificationCompat;
 public class FirebaseNotificationServices extends FirebaseMessagingService {
     public static final String TAG = "FIREBASE_NOTIFICATION";
 
+    public FirebaseNotificationServices() {
+
+    }
+
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
-        sendNotification(remoteMessage.getNotification().getBody());
-
+        // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            if (true) {
-
-            } else {
-
-            }
+            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+            Log.d(TAG, "From: " + remoteMessage.getFrom());
         }
 
+        // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotification(remoteMessage.getNotification().getBody());
+            String title = remoteMessage.getNotification().getTitle(); //get title
+            String message = remoteMessage.getNotification().getBody(); //get message
+
+            Log.d(TAG, "Message Notification Title: " + title);
+            Log.d(TAG, "Message Notification Body: " + message);
+
+            sendNotification(title, message);
         }
     }
 
-    private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, IndexActivity.class);
+    private void sendNotification(String title, String messageBody) {
+        Intent intent = new Intent(this, OtherMarkerActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
@@ -50,8 +56,8 @@ public class FirebaseNotificationServices extends FirebaseMessagingService {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.ic_launcher_background)
-                        .setContentTitle(getString(R.string.fcm_message))
+                        .setSmallIcon(R.drawable.ic_logo)
+                        .setContentTitle(title)
                         .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
