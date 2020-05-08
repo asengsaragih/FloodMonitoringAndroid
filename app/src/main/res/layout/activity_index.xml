@@ -7,6 +7,56 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_index_location_far"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/button_open_maps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/location_far_button_open_maps"
+            app:layout_constraintEnd_toStartOf="@+id/button_intent_other"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline_location_far" />
+
+        <Button
+            android:id="@+id/button_intent_other"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/location_far_button_open_other"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/button_open_maps"
+            app:layout_constraintTop_toTopOf="@+id/guideline_location_far" />
+
+        <TextView
+            android:id="@+id/textView_location_far"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/location_far_message"
+            app:layout_constraintBottom_toTopOf="@+id/guideline_location_far"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_location_far"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.5" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_index_location_true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,6 +68,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".activity.IndexActivity" />
+
+        <ProgressBar
+            android:id="@+id/index_progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:indeterminate="true"
+            android:indeterminateTintMode="src_atop"
+            android:indeterminateTint="@color/colorPaletteBlue"
+            android:background="@color/colorOpacity"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

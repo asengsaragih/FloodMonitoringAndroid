@@ -61,7 +61,7 @@ import java.util.Map;
 
 import static com.kopisenja.floodmonitoring.base.FunctionClass.ToastMessage;
 
-public class IndexActivity extends AppCompatActivity implements OnMapReadyCallback{
+public class IndexActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -69,11 +69,13 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
     public double mLatitude;
     public double mLongitude;
 
-    private ConstraintLayout mTrueConstraintLayout, mLocationDeniedConstraintLayout, mInternetDeniedConstraintLayout, mGetLocationConstraintLayout, mGpsFalseConstrainLayout;
+    private ConstraintLayout mTrueConstraintLayout, mLocationDeniedConstraintLayout, mInternetDeniedConstraintLayout, mGetLocationConstraintLayout, mGpsFalseConstrainLayout, mLocationFarConstraintLayout;
     private Button mRetryLocationButton;
     private Button mRetryConnectionButton;
     private Button mGetCurrentLoationButton;
     private Button mRetryGPSButton;
+    private Button mOpenClosestButton;
+    private Button mOpenOtherButton;
     private BottomSheetDialog mBottomSheetDialog;
     private PrefManagerNotification mSessionNotification;
 
@@ -96,6 +98,7 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
     private ImageView mDateImageView;
     private ImageView mDetailImageView;
     private ImageView mCategoryImageView;
+    private ProgressBar mIndexProgressBar;
 
     LatLng location1 = new LatLng(-6.975464, 107.633257);
     LatLng location2 = new LatLng(-6.993728, 107.631702);
@@ -112,11 +115,15 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
         mInternetDeniedConstraintLayout = findViewById(R.id.recycleView_no_connection);
         mGetLocationConstraintLayout = findViewById(R.id.constraint_get_location_false);
         mGpsFalseConstrainLayout = findViewById(R.id.constraint_gps_false);
+        mLocationFarConstraintLayout = findViewById(R.id.constraint_index_location_far);
 
         mRetryLocationButton = findViewById(R.id.button_index_location_retry);
         mRetryConnectionButton = findViewById(R.id.button_retry_connection);
         mGetCurrentLoationButton = findViewById(R.id.button_get_location_retry);
         mRetryGPSButton = findViewById(R.id.button_gps_retry);
+        mOpenClosestButton = findViewById(R.id.button_open_maps);
+        mOpenOtherButton = findViewById(R.id.button_intent_other);
+        mIndexProgressBar = findViewById(R.id.index_progressBar);
 
 
         if (isConnected() == true) {
@@ -174,8 +181,8 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
         mRetryConnectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-                if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                         connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
                     //we are connected to a network
                     mTrueConstraintLayout.setVisibility(View.VISIBLE);
@@ -254,6 +261,7 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
         });
     }
 
+    @SuppressLint("MissingPermission")
     private void geCurrentLocation() {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -290,6 +298,7 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                 }, Looper.getMainLooper());
     }
 
+    @SuppressLint("MissingPermission")
     private String mLocation() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -346,37 +355,37 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
-        boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        if (statusOfGPS == false) {
-            mTrueConstraintLayout.setVisibility(View.GONE);
-            mLocationDeniedConstraintLayout.setVisibility(View.GONE);
-            mInternetDeniedConstraintLayout.setVisibility(View.GONE);
-            mGetLocationConstraintLayout.setVisibility(View.GONE);
-            mGpsFalseConstrainLayout.setVisibility(View.VISIBLE);
-
-            mRetryGPSButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                }
-            });
-        } else {
-            mTrueConstraintLayout.setVisibility(View.VISIBLE);
-            mLocationDeniedConstraintLayout.setVisibility(View.GONE);
-            mInternetDeniedConstraintLayout.setVisibility(View.GONE);
-            mGetLocationConstraintLayout.setVisibility(View.GONE);
-            mGpsFalseConstrainLayout.setVisibility(View.GONE);
-
-            //fixing issue bug gps. but not effective
-
-            geCurrentLocation();
-        }
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
+//        boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+//
+//        if (statusOfGPS == false) {
+//            mTrueConstraintLayout.setVisibility(View.GONE);
+//            mLocationDeniedConstraintLayout.setVisibility(View.GONE);
+//            mInternetDeniedConstraintLayout.setVisibility(View.GONE);
+//            mGetLocationConstraintLayout.setVisibility(View.GONE);
+//            mGpsFalseConstrainLayout.setVisibility(View.VISIBLE);
+//
+//            mRetryGPSButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+//                }
+//            });
+//        } else {
+//            mTrueConstraintLayout.setVisibility(View.VISIBLE);
+//            mLocationDeniedConstraintLayout.setVisibility(View.GONE);
+//            mInternetDeniedConstraintLayout.setVisibility(View.GONE);
+//            mGetLocationConstraintLayout.setVisibility(View.GONE);
+//            mGpsFalseConstrainLayout.setVisibility(View.GONE);
+//
+//            //fixing issue bug gps. but not effective
+//
+//            geCurrentLocation();
+//        }
+//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -429,7 +438,15 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                     }
                 }
 
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(minDistance.getKey(), 15f));
+                if (minDistance.getValue() >= 100) {
+                    LatLng latLng = minDistance.getKey();
+                    mLocationFarValidation(latLng, mMap);
+                } else {
+                    mIndexProgressBar.setVisibility(View.GONE);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(minDistance.getKey(), 15f));
+                }
+
+                Log.d("CEK_LOKASI", calculateDistance(minDistance.getKey()) + "");
 
                 mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
@@ -443,6 +460,29 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
+    }
+
+    private void mLocationFarValidation(final LatLng latLng, final GoogleMap mMap) {
+        mTrueConstraintLayout.setVisibility(View.GONE);
+        mLocationFarConstraintLayout.setVisibility(View.VISIBLE);
+
+        mOpenOtherButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), OtherMarkerActivity.class));
+            }
+        });
+
+        mOpenClosestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTrueConstraintLayout.setVisibility(View.VISIBLE);
+                mLocationFarConstraintLayout.setVisibility(View.GONE);
+
+                mIndexProgressBar.setVisibility(View.GONE);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f));
             }
         });
     }

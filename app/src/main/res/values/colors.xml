@@ -5,7 +5,8 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorGrey">#858484</color>
     <color name="colorTransparent">#00000000</color>
-    
+    <color name="colorOpacity">#80000000</color>
+
     <color name="colorPalettePurple">#244457</color>
     <color name="colorPaletteTosca">#78C7BB</color>
     <color name="colorPaletteBlue">#93CFF2</color>

@@ -41,4 +41,8 @@
     <string name="gps_off">GPS Nonaktif</string>
     <string name="turn_gps_on">Hidupkan GPS</string>
     <string name="get_notification">Notifikasi</string>
+    
+    <string name="location_far_message">Tidak ada kit disekitar anda</string>
+    <string name="location_far_button_open_maps">Kit Terdekat</string>
+    <string name="location_far_button_open_other">Seluruh Kit</string>
 </resources>
