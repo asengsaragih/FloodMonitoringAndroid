@@ -1,7 +1,6 @@
 package com.kopisenja.floodmonitoring.activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -11,15 +10,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.Manifest;
 import android.os.Looper;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,24 +38,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.kopisenja.floodmonitoring.R;
-import com.kopisenja.floodmonitoring.adapter.HistoryAdapter;
-import com.kopisenja.floodmonitoring.base.FloodData;
-import com.kopisenja.floodmonitoring.base.PrefManagerNotification;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.kopisenja.floodmonitoring.base.FunctionClass.ToastMessage;
 
 public class IndexActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -77,7 +65,6 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
     private Button mOpenClosestButton;
     private Button mOpenOtherButton;
     private BottomSheetDialog mBottomSheetDialog;
-    private PrefManagerNotification mSessionNotification;
 
     // bottom sheet initialize
     private TextView mTimeTextview;
@@ -107,8 +94,6 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
-
-        mSessionNotification = new PrefManagerNotification(this);
 
         mTrueConstraintLayout = findViewById(R.id.constraint_index_location_true);
         mLocationDeniedConstraintLayout = findViewById(R.id.constraint_index_location_false);
@@ -148,19 +133,6 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
         reconnectingGetCurrentLocation();
 
 
-        configureNotification();
-    }
-
-    private void configureNotification() {
-        boolean check = mSessionNotification.notification();
-
-        if (check == true) {
-            //notification enable
-            FirebaseMessaging.getInstance().subscribeToTopic("FLOOD_MONITORING");
-        } else {
-            //notification disable
-            FirebaseMessaging.getInstance().unsubscribeFromTopic("FLOOD_MONITORING");
-        }
 
     }
 
@@ -680,19 +652,6 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        MenuItem menuItem = menu.findItem(R.id.action_notification);
-
-        if (mSessionNotification.notification() == true) {
-            menuItem.setChecked(true);
-        } else {
-            menuItem.setChecked(false);
-        }
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_about:
@@ -700,15 +659,6 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
                 return true;
             case R.id.action_full_marker:
                 startActivity(new Intent(getApplicationContext(), OtherMarkerActivity.class));
-                return true;
-            case R.id.action_notification:
-                if (item.isChecked() == true) {
-                    item.setChecked(false);
-                    mSessionNotification.setNotification(false);
-                } else {
-                    item.setChecked(true);
-                    mSessionNotification.setNotification(true);
-                }
                 return true;
         }
         return super.onOptionsItemSelected(item);

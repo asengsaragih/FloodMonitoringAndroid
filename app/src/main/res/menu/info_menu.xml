@@ -6,11 +6,6 @@
         android:title="Daftar Lokasi Perangkat"
         app:showAsAction="never"/>
     <item
-        android:id="@+id/action_notification"
-        android:title="@string/get_notification"
-        android:checkable="true"
-        app:showAsAction="never"/>
-    <item
         android:id="@+id/action_about"
         android:title="@string/activity_about"
         app:showAsAction="never"/>

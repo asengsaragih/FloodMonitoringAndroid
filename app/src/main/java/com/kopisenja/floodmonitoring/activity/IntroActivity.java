@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ScrollView;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.kopisenja.floodmonitoring.R;
 import com.kopisenja.floodmonitoring.base.PrefManagerIntro;
 
@@ -48,6 +49,7 @@ public class IntroActivity extends AppCompatActivity {
                     mIntroTwoScrollView.setVisibility(View.VISIBLE);
                 } else {
                     mSessionIntro.setIntro(true);
+                    FirebaseMessaging.getInstance().subscribeToTopic("FLOOD_MONITORING");
                     Intent i = new Intent(getApplicationContext(), IndexActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
