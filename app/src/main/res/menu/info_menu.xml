@@ -9,4 +9,8 @@
         android:id="@+id/action_about"
         android:title="@string/activity_about"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_notification"
+        android:title="@string/activity_notification"
+        app:showAsAction="never"/>
 </menu>

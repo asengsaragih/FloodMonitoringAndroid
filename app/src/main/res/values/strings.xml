@@ -25,6 +25,7 @@
     <string name="bottom_sheet_text_last_normal"></string>
     <string name="activity_other_marker">Lokasi Perangkat</string>
     <string name="activity_about">Tentang Kami</string>
+    <string name="activity_notification">Pengaturan Notifikasi</string>
     <string name="about_application_version">Kopi Senja | v 1.0</string>
     <string name="about_application_content">Aplikasi Monitoring Banjir adalah aplikasi yang dibuat khusus untuk masyarakat agar lebih mudah mendapatkan informasi bahaya banjir dan produk ini merupakan sebuah research tim kami dalam rangka tugas Proyek Akhir D3 Rekayasa Perangkat Lunak Aplikasi, Telkom University</string>
     <string name="detail_info">Detail Info</string>

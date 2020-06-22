@@ -18,7 +18,15 @@
         android:roundIcon="@drawable/ic_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.NotificationActivity"></activity>
+        <activity
+            android:name=".activity.NotificationActivity"
+            android:screenOrientation="userPortrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activity.OtherMarkerActivity"
             android:screenOrientation="userPortrait" />
@@ -26,11 +34,7 @@
             android:name=".activity.IntroActivity"
             android:noHistory="true"
             android:screenOrientation="userPortrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activity.AboutActivity"

@@ -660,6 +660,9 @@ public class IndexActivity extends AppCompatActivity implements OnMapReadyCallba
             case R.id.action_full_marker:
                 startActivity(new Intent(getApplicationContext(), OtherMarkerActivity.class));
                 return true;
+            case R.id.action_notification:
+                startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
