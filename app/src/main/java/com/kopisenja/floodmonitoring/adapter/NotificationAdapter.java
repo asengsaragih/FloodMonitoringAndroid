@@ -1,17 +1,20 @@
 package com.kopisenja.floodmonitoring.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.kopisenja.floodmonitoring.R;
-import com.kopisenja.floodmonitoring.base.Marker;
 import com.kopisenja.floodmonitoring.base.Notification;
 
 import java.util.ArrayList;
@@ -45,7 +48,43 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Notification notification = mData.get(position);
 
+        //initial tmp shared pref
+        final SharedPreferences sharedPreferences = mContext.getSharedPreferences("NOTIFICATION_SESSION", mContext.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        final String key = mDataId.get(position);
+
         holder.nameTextView.setText(notification.getName());
+
+        //initial switch before show
+        int checkSwitch = sharedPreferences.getInt(key, 0);
+        if (checkSwitch == 1) {
+            holder.notificationSwitch.setChecked(true);
+        } else {
+            holder.notificationSwitch.setChecked(false);
+        }
+
+        //switch onchange
+        holder.notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked == true) {
+                    // active topic
+                    FirebaseMessaging.getInstance().subscribeToTopic("FLOOD_" + key);
+
+                    // put tmp key value
+                    editor.putInt(key, 1);
+                    editor.commit();
+                } else {
+                    // deactive topic
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic("FLOOD_" + key);
+
+                    // put tmp key value
+                    editor.putInt(key, 0);
+                    editor.commit();
+                }
+            }
+        });
     }
 
     @Override

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -87,6 +88,14 @@ public class NotificationActivity extends AppCompatActivity {
         mEmptyView = findViewById(R.id.emptyView_notification);
 
         getSupportActionBar().hide();
+
+        mBackImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                startActivity(new Intent(getApplicationContext(), IndexActivity.class));
+                finish();
+            }
+        });
 
         setTitleText();
         showListData();
