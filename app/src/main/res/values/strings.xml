@@ -32,6 +32,7 @@
 
     <string name="btn_intro_next">Selanjutnya</string>
     <string name="btn_intro_skip">Lewati</string>
+    <string name="btn_close">Tutup</string>
 
     <string name="title_intro_one">Mendeteksi Area Banjir Disekitar</string>
     <string name="title_intro_two">Memberikan Notifikasi Ketika Terjadi Banjir</string>
@@ -46,4 +47,7 @@
     <string name="location_far_message">Tidak ada kit disekitar anda</string>
     <string name="location_far_button_open_maps">Kit Terdekat</string>
     <string name="location_far_button_open_other">Seluruh Kit</string>
+
+    <string name="info_notification_title">Panduan Notifikasi</string>
+    <string name="info_notification_message">\nNotifikasi akan muncul saat kategori air dalam status Waspada atau Bahaya. \n\nJika ingin mendapatkan notifikasi, maka aktifkan switch pada lokasi yang diinginkan. \n\nKopi Senja | 2020</string>
 </resources>

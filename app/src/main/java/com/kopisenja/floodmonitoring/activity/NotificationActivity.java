@@ -2,10 +2,12 @@ package com.kopisenja.floodmonitoring.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +31,7 @@ import java.util.ArrayList;
 public class NotificationActivity extends AppCompatActivity {
 
     private ImageView mBackImageView;
+    private ImageView mInfoImageView;
     private RecyclerView mNotificationRecycleview;
     private TextView mTitleTextview;
     private View mEmptyView;
@@ -86,19 +89,39 @@ public class NotificationActivity extends AppCompatActivity {
         mNotificationRecycleview = findViewById(R.id.recycleView_notification);
         mTitleTextview = findViewById(R.id.textView_title_notification);
         mEmptyView = findViewById(R.id.emptyView_notification);
+        mInfoImageView = findViewById(R.id.imageView_info_notification);
 
         getSupportActionBar().hide();
 
         mBackImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(getApplicationContext(), IndexActivity.class));
                 finish();
+            }
+        });
+
+        mInfoImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                infoDialog();
             }
         });
 
         setTitleText();
         showListData();
+    }
+
+    private void infoDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.info_notification_title))
+                .setMessage(getString(R.string.info_notification_message))
+                .setNegativeButton(getString(R.string.btn_close), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     private void setTitleText() {
